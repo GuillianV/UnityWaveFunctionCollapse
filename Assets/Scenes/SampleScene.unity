@@ -170,9 +170,102 @@ MonoBehaviour:
   chunckGridSize: {x: 8, y: 8}
   Chuncks:
   - gridToInstanciate: {fileID: 3739282701267447648, guid: 071e895fba5bf4f4db5ec2a1a9a73f40, type: 3}
+    Edges:
+      left:
+        patern: 000XX000
+      top:
+        patern: 00000000
+      right:
+        patern: 000XX000
+      down:
+        patern: 00000000
     left: 1
     top: 0
     right: 1
+    down: 0
+  - gridToInstanciate: {fileID: 3739282701267447648, guid: ef3eb366032cd4243b7db3cff32c1251, type: 3}
+    Edges:
+      left:
+        patern: 00000000
+      top:
+        patern: 000XX000
+      right:
+        patern: 00000000
+      down:
+        patern: 000XX000
+    left: 0
+    top: 1
+    right: 0
+    down: 1
+  - gridToInstanciate: {fileID: 3739282701267447648, guid: 171a74759419e2843a2633a742dfea6d, type: 3}
+    Edges:
+      left:
+        patern: 000XX000
+      top:
+        patern: 000XX000
+      right:
+        patern: 00000000
+      down:
+        patern: 00000000
+    left: 1
+    top: 1
+    right: 0
+    down: 0
+  - gridToInstanciate: {fileID: 3739282701267447648, guid: 4b3728c01b8d7e741b1bd09cc541908c, type: 3}
+    Edges:
+      left:
+        patern: 00000000
+      top:
+        patern: 000XX000
+      right:
+        patern: 000XX000
+      down:
+        patern: 00000000
+    left: 0
+    top: 1
+    right: 1
+    down: 0
+  - gridToInstanciate: {fileID: 3739282701267447648, guid: 318d12ec096ced2418bd5249c3fb654d, type: 3}
+    Edges:
+      left:
+        patern: 00000000
+      top:
+        patern: 00000000
+      right:
+        patern: 000XX000
+      down:
+        patern: 000XX000
+    left: 0
+    top: 0
+    right: 1
+    down: 1
+  - gridToInstanciate: {fileID: 3739282701267447648, guid: b248f5a054c3a674a9d9305e76d56485, type: 3}
+    Edges:
+      left:
+        patern: 000XX000
+      top:
+        patern: 00000000
+      right:
+        patern: 00000000
+      down:
+        patern: 000XX000
+    left: 1
+    top: 0
+    right: 0
+    down: 1
+  - gridToInstanciate: {fileID: 8287938752427090657, guid: 805a897720067e940b8386f1164e14e2, type: 3}
+    Edges:
+      left:
+        patern: 00000000
+      top:
+        patern: 00000000
+      right:
+        patern: 00000000
+      down:
+        patern: 00000000
+    left: 0
+    top: 0
+    right: 0
     down: 0
 --- !u!1 &519420028
 GameObject:
