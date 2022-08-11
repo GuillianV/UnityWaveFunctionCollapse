@@ -9,8 +9,13 @@ using UnityEngine;
 
 public class Options
 {
-    public Dictionary<int, string> options = new Dictionary<int, string>();
+    public List<string> options = new List<string>();
 
+    public const int LEFT = 0;
+    public const int TOP = 1;
+    public const int RIGHT = 2;
+    public const int DOWN = 3;
+    
     public Options(List<Chunck> chuncks)
     {
      
@@ -19,22 +24,34 @@ public class Options
             string optionValue = string.Format("{0}-{1}-{2}-{3}", chunck.Edges.left.patern, chunck.Edges.top.patern,
                 chunck.Edges.right.patern, chunck.Edges.down.patern);
 
-            if (!options.ContainsValue(optionValue))
+            if (!options.Contains(optionValue))
             {
-                options.Add(options.Count+1,optionValue);
+                options.Add(optionValue);
             }
         });
         
         
     }
 
-    public int[] GetAllOptions()
+    public List<string> GetCellEdgeOptions(int Edge, string[] fullOptions)
     {
-        return options.Keys.ToArray();
+        List<string> edgeOption = new List<string>();
+        fullOptions.ToList()?.ForEach(cdo =>
+        {
+            string dopt = cdo.Split('-')[Edge];
+            if (!edgeOption.Contains(dopt))
+            {
+                edgeOption.Add(dopt);
+            }
+                           
+        });
+        return edgeOption;
     }
-    
-    
-    
+
+    public string[] GetAllOptions()
+    {
+        return options.ToArray();
+    }
 
 }
 
@@ -67,10 +84,10 @@ public class Chunck
     public bool down;
 
     [CanBeNull]
-    public Chunck GetChunck(int index, Options options)
+    public Chunck GetChunck(string index, Options options)
     {
-       KeyValuePair<int,string> valuePair = options.options.FirstOrDefault(kpo => {return kpo.Key == index;});
-       string[] edges = valuePair.Value.Split('-');
+       string valuePair = options.options.FirstOrDefault(kpo => {return kpo == index;});
+       string[] edges = valuePair.Split('-');
 
        Chunck chunckFound = null;
        if (edges.Length == 4)
@@ -90,9 +107,9 @@ public class Chunck
 public class GridChunck
 {
     public bool collapsed = false;
-    public int[] optionsAvailable;
+    public string[] optionsAvailable;
 
-    public GridChunck(int[] _optionsAvailable)
+    public GridChunck(string[] _optionsAvailable)
     {
         optionsAvailable = _optionsAvailable;
     }
@@ -102,6 +119,7 @@ public class GridChunck
 
 public class WaveFunctionCollapse : MonoBehaviour
 {
+    private int iter = 0;
 
     public Vector2Int generateSize = new Vector2Int(2,2);
     public Vector2Int chunckGridSize = new Vector2Int(8, 8);
@@ -121,6 +139,7 @@ public class WaveFunctionCollapse : MonoBehaviour
         }
 
         Draw();
+      
     }
 
 
@@ -128,15 +147,16 @@ public class WaveFunctionCollapse : MonoBehaviour
     {
    
    
-
-       GridChunck[] gridCopy = grid.OrderBy(gridchunk => { return gridchunk.optionsAvailable.Length ; }).ToArray();
-       gridCopy = gridCopy.Where(gridChunck => { return gridChunck.optionsAvailable.Length == gridCopy[0].optionsAvailable.Length; }).ToArray();
+    
+       GridChunck[] gridCopy = grid.Where(chunck => { return chunck.collapsed == false;}).OrderBy(gridchunk => { return gridchunk.optionsAvailable.Length ; }).ToArray();
+       gridCopy = gridCopy.Where(gridChunck => { return gridChunck.optionsAvailable.Length == gridCopy[0].optionsAvailable.Length;
+       }).ToArray();
 
        GridChunck chunckChoosed = gridCopy[UnityEngine.Random.Range(0, gridCopy.Length)];
        chunckChoosed.collapsed = true;
        int optionIndex = UnityEngine.Random.Range(0, chunckChoosed.optionsAvailable.Length);
-       int option = chunckChoosed.optionsAvailable[optionIndex];
-       chunckChoosed.optionsAvailable = new int[]{option};
+       string option = chunckChoosed.optionsAvailable[optionIndex];
+       chunckChoosed.optionsAvailable = new String[]{option};
 
        Debug.Log(chunckChoosed);
        
@@ -144,7 +164,7 @@ public class WaveFunctionCollapse : MonoBehaviour
             for (int i = 0; i < generateSize.x; i++) {
                 GridChunck cell = grid[i + j * generateSize.y];
                 if (cell.collapsed) {
-                    int index = cell.optionsAvailable[0];
+                    string index = cell.optionsAvailable[0];
                    
                         Chunck? chunckFound = Chuncks.FirstOrDefault(c => c.GetChunck(index, Options) != null);
                         Instantiate(chunckFound.gridToInstanciate,
@@ -153,6 +173,99 @@ public class WaveFunctionCollapse : MonoBehaviour
                 } 
             }
         }
+        
+        for (int j = 0; j < generateSize.y; j++) {
+            for (int i = 0; i < generateSize.x; i++) {
+                GridChunck cell = grid[i + j * generateSize.y];
+                if (!cell.collapsed)
+                {
+                    
+                    //LEFT
+                    if (i > 0)
+                    {
+                        GridChunck cellLeft = grid[i - 1 + j  * generateSize.x];
+                        List<string> rightOptions = Options.GetCellEdgeOptions(Options.RIGHT, cellLeft.optionsAvailable);
+                        List<string> finalOptions = new List<string>();
+                        rightOptions?.ForEach(upo =>
+                        {
+                            List<string> flist = cell.optionsAvailable.Where(oa =>
+                            {
+                                return oa.Split('-')[Options.LEFT] == upo;
+                            }).ToList();
+                            finalOptions.AddRange(flist);
+                        });
+
+                        cell.optionsAvailable = finalOptions.ToArray();
+                    
+                    }
+                    //UP
+                    if (j > 0)
+                    {
+                        GridChunck cellUp = grid[i + (j - 1) * generateSize.y];
+                        List<string> downOptions = Options.GetCellEdgeOptions(Options.DOWN, cellUp.optionsAvailable);
+                        List<string> finalOptions = new List<string>();
+                        downOptions?.ForEach(upo =>
+                        {
+                            List<string> flist = cell.optionsAvailable.Where(oa =>
+                            {
+                                return oa.Split('-')[Options.TOP] == upo;
+                            }).ToList();
+                            finalOptions.AddRange(flist);
+                        });
+
+                        cell.optionsAvailable = finalOptions.ToArray();
+
+                    }
+                    //RIGHT
+                    if (i < generateSize.x -1 )
+                    {
+                        GridChunck cellRight = grid[i + 1 + j  * generateSize.x];
+                        List<string> leftOptions = Options.GetCellEdgeOptions(Options.LEFT, cellRight.optionsAvailable);
+                        List<string> finalOptions = new List<string>();
+                        leftOptions?.ForEach(upo =>
+                        {
+                            List<string> flist = cell.optionsAvailable.Where(oa =>
+                            {
+                                return oa.Split('-')[Options.RIGHT] == upo;
+                            }).ToList();
+                            finalOptions.AddRange(flist);
+                        });
+
+                        cell.optionsAvailable = finalOptions.ToArray();
+                        
+                    }
+                    //DOWN
+                    if (j < generateSize.y -1 )
+                    {
+                        GridChunck cellDown = grid[i + (j + 1) * generateSize.y];
+                        List<string> upOptions = Options.GetCellEdgeOptions(Options.TOP, cellDown.optionsAvailable);
+                        List<string> finalOptions = new List<string>();
+                        upOptions?.ForEach(upo =>
+                        {
+                            List<string> flist = cell.optionsAvailable.Where(oa =>
+                            {
+                                return oa.Split('-')[Options.DOWN] == upo;
+                            }).ToList();
+                            finalOptions.AddRange(flist);
+                        });
+
+                        cell.optionsAvailable = finalOptions.ToArray();
+                        
+                       
+                    }
+                    
+                  
+                } 
+            }
+        }
+
+        iter++;
+        if (iter < generateSize.x*generateSize.y )
+        {
+            Draw();
+        }
+        
+        
     }
     
     
