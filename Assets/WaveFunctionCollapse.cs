@@ -5,6 +5,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class Options
@@ -78,10 +79,6 @@ public class Chunck
 
     [Header("Rules")]
     public SquareEdge Edges;
-    public bool left;
-    public bool top;
-    public bool right;
-    public bool down;
 
     [CanBeNull]
     public Chunck GetChunck(string index, Options options)
@@ -92,7 +89,7 @@ public class Chunck
        Chunck chunckFound = null;
        if (edges.Length == 4)
        {
-           if (edges[0] == Edges.left.patern && edges[1] == Edges.top.patern && edges[2] == Edges.right.patern  && edges[3] == Edges.down.patern  )
+           if (edges[Options.LEFT] == Edges.left.patern && edges[Options.TOP] == Edges.top.patern && edges[Options.RIGHT] == Edges.right.patern  && edges[Options.DOWN] == Edges.down.patern  )
            {
                chunckFound = this;
            }
@@ -118,13 +115,48 @@ public class GridChunck
 }
 
 
+#if UNITY_EDITOR
+[CustomEditor(typeof(WaveFunctionCollapse))]
+public class RandomScript_Editor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector(); // for other non-HideInInspector fields
+ 
+        WaveFunctionCollapse script = (WaveFunctionCollapse)target;
+ 
+        // draw checkbox for the bool
+        script.allPathAvailables = EditorGUILayout.Toggle("Enable Path", script.allPathAvailables);
+        if (script.allPathAvailables) // if bool is true, show other fields
+        {
+        
+            var list = serializedObject.FindProperty("edgeToFollow");
+            EditorGUILayout.PropertyField(list, new GUIContent("Edges To Follow"), true);
+        
+        }
+    }
+}
+#endif
+
 public class WaveFunctionCollapse : MonoBehaviour
 {
     private int iter = 0;
 
+    [Header("Génération options")]
     public Vector2Int generateSize = new Vector2Int(2,2);
     public Vector2Int chunckGridSize = new Vector2Int(8, 8);
+   
+  
+    [HideInInspector]
+    [Tooltip("When the map is genérating, the algorith will try to avoid chunck who cant be accesed")]
+    public bool allPathAvailables = true;
+
+    [HideInInspector]
+    public List<string> edgeToFollow;
+
     public List<Chunck> Chuncks = new List<Chunck>();
+
+    
     private Options Options;
     
     private GridChunck [] grid ;
@@ -206,7 +238,22 @@ public class WaveFunctionCollapse : MonoBehaviour
 
                         cell.optionsAvailable = finalOptions.ToArray();
                     
+                    }/*
+                    else if (allPathAvailables && i == 0)
+                    {
+                        List<string> leftOptions = Options.GetCellEdgeOptions(Options.LEFT, cell.optionsAvailable);
+                        List<string> finalOptions = new List<string>();
+
+                        //Edge X
+                        //LeftOpt 0X
+                        List<string> NotallowedLeftOption = leftOptions.Where(l => edgeToFollow.Any(t => t == l)).ToList();
+                        
+
+                        
+                        cell.optionsAvailable = finalOptions.ToArray();
                     }
+                    */
+                    
                     //UP
                     if (j > 0)
                     {

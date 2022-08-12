@@ -166,93 +166,72 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40c171f6462957f44a5e0ace03e8401d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generateSize: {x: 2, y: 2}
+  generateSize: {x: 5, y: 5}
   chunckGridSize: {x: 8, y: 8}
+  allPathAvailables: 1
+  edgeToFollow:
+  - 1
   Chuncks:
   - gridToInstanciate: {fileID: 3739282701267447648, guid: 071e895fba5bf4f4db5ec2a1a9a73f40, type: 3}
     Edges:
       left:
-        patern: 000XX000
+        patern: 1
       top:
-        patern: 00000000
+        patern: 0
       right:
-        patern: 000XX000
+        patern: 1
       down:
-        patern: 00000000
-    left: 1
-    top: 0
-    right: 1
-    down: 0
+        patern: 0
   - gridToInstanciate: {fileID: 3739282701267447648, guid: ef3eb366032cd4243b7db3cff32c1251, type: 3}
     Edges:
       left:
-        patern: 00000000
+        patern: 0
       top:
-        patern: 000XX000
+        patern: 1
       right:
-        patern: 00000000
+        patern: 0
       down:
-        patern: 000XX000
-    left: 0
-    top: 1
-    right: 0
-    down: 1
+        patern: 1
   - gridToInstanciate: {fileID: 3739282701267447648, guid: 171a74759419e2843a2633a742dfea6d, type: 3}
     Edges:
       left:
-        patern: 000XX000
+        patern: 1
       top:
-        patern: 000XX000
+        patern: 1
       right:
-        patern: 00000000
+        patern: 0
       down:
-        patern: 00000000
-    left: 1
-    top: 1
-    right: 0
-    down: 0
+        patern: 0
   - gridToInstanciate: {fileID: 3739282701267447648, guid: 4b3728c01b8d7e741b1bd09cc541908c, type: 3}
     Edges:
       left:
-        patern: 00000000
+        patern: 0
       top:
-        patern: 000XX000
+        patern: 1
       right:
-        patern: 000XX000
+        patern: 1
       down:
-        patern: 00000000
-    left: 0
-    top: 1
-    right: 1
-    down: 0
+        patern: 0
   - gridToInstanciate: {fileID: 3739282701267447648, guid: 318d12ec096ced2418bd5249c3fb654d, type: 3}
     Edges:
       left:
-        patern: 00000000
+        patern: 0
       top:
-        patern: 00000000
+        patern: 0
       right:
-        patern: 000XX000
+        patern: 1
       down:
-        patern: 000XX000
-    left: 0
-    top: 0
-    right: 1
-    down: 1
+        patern: 1
   - gridToInstanciate: {fileID: 3739282701267447648, guid: b248f5a054c3a674a9d9305e76d56485, type: 3}
     Edges:
       left:
-        patern: 000XX000
+        patern: 1
       top:
-        patern: 00000000
+        patern: 0
       right:
-        patern: 00000000
+        patern: 0
       down:
-        patern: 000XX000
-    left: 1
-    top: 0
-    right: 0
-    down: 1
+        patern: 1
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
