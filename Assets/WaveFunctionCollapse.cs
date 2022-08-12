@@ -107,6 +107,7 @@ public class Chunck
 public class GridChunck
 {
     public bool collapsed = false;
+    public bool instancied = false;
     public string[] optionsAvailable;
 
     public GridChunck(string[] _optionsAvailable)
@@ -146,6 +147,10 @@ public class WaveFunctionCollapse : MonoBehaviour
     public void Draw()
     {
    
+      
+        if (iter < generateSize.x*generateSize.y )
+        {
+            iter++;
    
     
        GridChunck[] gridCopy = grid.Where(chunck => { return chunck.collapsed == false;}).OrderBy(gridchunk => { return gridchunk.optionsAvailable.Length ; }).ToArray();
@@ -163,13 +168,17 @@ public class WaveFunctionCollapse : MonoBehaviour
         for (int j = 0; j < generateSize.y; j++) {
             for (int i = 0; i < generateSize.x; i++) {
                 GridChunck cell = grid[i + j * generateSize.y];
-                if (cell.collapsed) {
+                if (cell.collapsed && !cell.instancied) {
                     string index = cell.optionsAvailable[0];
                    
                         Chunck? chunckFound = Chuncks.FirstOrDefault(c => c.GetChunck(index, Options) != null);
-                        Instantiate(chunckFound.gridToInstanciate,
-                            new Vector3(i * chunckGridSize.x, j * chunckGridSize.y, 0), Quaternion.identity);
-
+                        if (chunckFound != null )
+                        {
+                            Instantiate(chunckFound.gridToInstanciate,
+                                new Vector3(i * chunckGridSize.x, j * chunckGridSize.y, 0), Quaternion.identity);
+                            cell.instancied = true;
+                        }
+                      
                 } 
             }
         }
@@ -202,13 +211,13 @@ public class WaveFunctionCollapse : MonoBehaviour
                     if (j > 0)
                     {
                         GridChunck cellUp = grid[i + (j - 1) * generateSize.y];
-                        List<string> downOptions = Options.GetCellEdgeOptions(Options.DOWN, cellUp.optionsAvailable);
+                        List<string> downOptions = Options.GetCellEdgeOptions(Options.TOP, cellUp.optionsAvailable);
                         List<string> finalOptions = new List<string>();
                         downOptions?.ForEach(upo =>
                         {
                             List<string> flist = cell.optionsAvailable.Where(oa =>
                             {
-                                return oa.Split('-')[Options.TOP] == upo;
+                                return oa.Split('-')[Options.DOWN] == upo;
                             }).ToList();
                             finalOptions.AddRange(flist);
                         });
@@ -238,13 +247,13 @@ public class WaveFunctionCollapse : MonoBehaviour
                     if (j < generateSize.y -1 )
                     {
                         GridChunck cellDown = grid[i + (j + 1) * generateSize.y];
-                        List<string> upOptions = Options.GetCellEdgeOptions(Options.TOP, cellDown.optionsAvailable);
+                        List<string> upOptions = Options.GetCellEdgeOptions(Options.DOWN, cellDown.optionsAvailable);
                         List<string> finalOptions = new List<string>();
                         upOptions?.ForEach(upo =>
                         {
                             List<string> flist = cell.optionsAvailable.Where(oa =>
                             {
-                                return oa.Split('-')[Options.DOWN] == upo;
+                                return oa.Split('-')[Options.TOP] == upo;
                             }).ToList();
                             finalOptions.AddRange(flist);
                         });
@@ -259,12 +268,9 @@ public class WaveFunctionCollapse : MonoBehaviour
             }
         }
 
-        iter++;
-        if (iter < generateSize.x*generateSize.y )
-        {
-            Draw();
+       
+        Draw();
         }
-        
         
     }
     

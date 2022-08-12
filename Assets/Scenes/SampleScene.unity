@@ -253,20 +253,6 @@ MonoBehaviour:
     top: 0
     right: 0
     down: 1
-  - gridToInstanciate: {fileID: 8287938752427090657, guid: 805a897720067e940b8386f1164e14e2, type: 3}
-    Edges:
-      left:
-        patern: 00000000
-      top:
-        patern: 00000000
-      right:
-        patern: 00000000
-      down:
-        patern: 00000000
-    left: 0
-    top: 0
-    right: 0
-    down: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
