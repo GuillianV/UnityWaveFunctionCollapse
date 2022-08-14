@@ -166,124 +166,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40c171f6462957f44a5e0ace03e8401d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generateSize: {x: 8, y: 8}
+  generateSize: {x: 4, y: 4}
   chunckGridSize: {x: 8, y: 8}
   allPathAvailables: 1
   edgeToFollow:
   - 1
-  seed: 2
+  - 2
+  seed: 3
   Chuncks:
-  - gridToInstanciate: {fileID: 3739282701267447648, guid: 071e895fba5bf4f4db5ec2a1a9a73f40, type: 3}
-    Edges:
-      left:
-        patern: 1
-      top:
-        patern: 0
-      right:
-        patern: 1
-      down:
-        patern: 0
-  - gridToInstanciate: {fileID: 3739282701267447648, guid: ef3eb366032cd4243b7db3cff32c1251, type: 3}
-    Edges:
-      left:
-        patern: 0
-      top:
-        patern: 1
-      right:
-        patern: 0
-      down:
-        patern: 1
-  - gridToInstanciate: {fileID: 3739282701267447648, guid: 171a74759419e2843a2633a742dfea6d, type: 3}
-    Edges:
-      left:
-        patern: 1
-      top:
-        patern: 1
-      right:
-        patern: 0
-      down:
-        patern: 0
-  - gridToInstanciate: {fileID: 3739282701267447648, guid: 4b3728c01b8d7e741b1bd09cc541908c, type: 3}
-    Edges:
-      left:
-        patern: 0
-      top:
-        patern: 1
-      right:
-        patern: 1
-      down:
-        patern: 0
-  - gridToInstanciate: {fileID: 3739282701267447648, guid: 318d12ec096ced2418bd5249c3fb654d, type: 3}
-    Edges:
-      left:
-        patern: 0
-      top:
-        patern: 0
-      right:
-        patern: 1
-      down:
-        patern: 1
-  - gridToInstanciate: {fileID: 3739282701267447648, guid: b248f5a054c3a674a9d9305e76d56485, type: 3}
-    Edges:
-      left:
-        patern: 1
-      top:
-        patern: 0
-      right:
-        patern: 0
-      down:
-        patern: 1
-  - gridToInstanciate: {fileID: 3739282701267447648, guid: 7feb9e428cacab346b1a14eecb34af1b, type: 3}
-    Edges:
-      left:
-        patern: 0
-      top:
-        patern: 1
-      right:
-        patern: 0
-      down:
-        patern: 0
-  - gridToInstanciate: {fileID: 3739282701267447648, guid: 0167d187b617f97438acab004e345bce, type: 3}
-    Edges:
-      left:
-        patern: 1
-      top:
-        patern: 0
-      right:
-        patern: 1
-      down:
-        patern: 1
-  - gridToInstanciate: {fileID: 3739282701267447648, guid: 65b7f80a578c7974daf30fa0feb4943d, type: 3}
-    Edges:
-      left:
-        patern: 1
-      top:
-        patern: 1
-      right:
-        patern: 0
-      down:
-        patern: 1
-  - gridToInstanciate: {fileID: 3739282701267447648, guid: d9fe75e4351857b4dadc469b1f0a232e, type: 3}
-    Edges:
-      left:
-        patern: 1
-      top:
-        patern: 1
-      right:
-        patern: 1
-      down:
-        patern: 0
-  - gridToInstanciate: {fileID: 3739282701267447648, guid: 525b8b521aacc1045a359515db1d5ca4, type: 3}
-    Edges:
-      left:
-        patern: 0
-      top:
-        patern: 1
-      right:
-        patern: 1
-      down:
-        patern: 1
-  gcDebug: []
+  - {fileID: 11400000, guid: 61bb6d3b38a48cd488bfd55d050c35b5, type: 2}
+  - {fileID: 11400000, guid: 3b15cdbbad4900e449874aa0bd749f46, type: 2}
+  - {fileID: 11400000, guid: 68c75d201a3728144a7ba769b9ec124c, type: 2}
+  - {fileID: 11400000, guid: 0418f672d83489f45b286b6ed67c7faa, type: 2}
+  - {fileID: 11400000, guid: e0581fdeca4c52a4f9816145139cfd01, type: 2}
+  - {fileID: 11400000, guid: 267ed7b0d82a246458863b7220ce6988, type: 2}
+  - {fileID: 11400000, guid: dd0e33b1678f03f4a9dd82bd93517343, type: 2}
+  - {fileID: 11400000, guid: 7afee5d5f80a0fa4fb11c8c014be29dd, type: 2}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
