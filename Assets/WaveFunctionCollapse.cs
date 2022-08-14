@@ -65,7 +65,7 @@ public class Options
     public const int RIGHT = 2;
     public const int DOWN = 3;
     
-    public Options(List<Chunck> chuncks)
+    public Options(List<ChunckData> chuncks)
     {
      
         chuncks?.ForEach(chunck =>
@@ -119,55 +119,7 @@ public class Options
 
 }
 
-[System.Serializable]
-public struct Edge
-{
-    public string patern;
-}
-[System.Serializable]
-public struct SquareEdge
-{
-    public Edge left;
-    public Edge top;
-    public Edge right;
-    public Edge down;
-}
 
-
-[System.Serializable]
-public class Chunck
-{
-  
-    public GameObject gridToInstanciate ;
-
-    [Header("Rules")]
-    public SquareEdge Edges;
-
-    [CanBeNull]
-    public Chunck GetChunck(string index, Options options)
-    {
-        if (index == "0")
-        {
-            return null;
-        }
-        
-       string valuePair = options.options.FirstOrDefault(kpo => {return kpo == index;});
-       string[] edges = valuePair.Split('-');
-
-       Chunck chunckFound = null;
-       if (edges.Length == 4)
-       {
-           if (edges[Options.LEFT] == Edges.left.patern && edges[Options.TOP] == Edges.top.patern && edges[Options.RIGHT] == Edges.right.patern  && edges[Options.DOWN] == Edges.down.patern  )
-           {
-               chunckFound = this;
-           }
-           
-       }
-       return chunckFound;
-
-    }
-    
-}
 [Serializable]
 
 public class GridChunck
@@ -227,11 +179,11 @@ public class WaveFunctionCollapse : MonoBehaviour
     public List<string> edgeToFollow;
 
     public int seed = 1;
-    public List<Chunck> Chuncks = new List<Chunck>();
-
-
-    public List<GridChunck> gcDebug = new List<GridChunck>();
-    private int pathIdentifier = 0;
+    public List<ChunckData> Chuncks = new List<ChunckData>();
+    
+    
+    private ChunckManager _chunckManager;
+   private int pathIdentifier = 0;
     private System.Random _random;
     private Options Options;
     private JoinPath JoinPath;
@@ -244,6 +196,8 @@ public class WaveFunctionCollapse : MonoBehaviour
     {
       
         _random = new System.Random(seed);
+        _chunckManager = new ChunckManager(Chuncks.ToArray());
+        
         Options = new Options(Chuncks);
         JoinPath = new JoinPath();
         grid = new GridChunck[generateSize.x * generateSize.y];
@@ -606,17 +560,14 @@ public class WaveFunctionCollapse : MonoBehaviour
                     }
                     
                     string index = cell.optionsAvailable[0];
-                   
-                    Chunck? chunckFound = Chuncks.FirstOrDefault(c => c.GetChunck(index, Options) != null);
+
+                    ChunckData? chunckFound = _chunckManager.GetChunck(index, Options);
                     if (chunckFound != null )
                     {
-                        Instantiate(chunckFound.gridToInstanciate,
+                        Instantiate(chunckFound.assetsToInstanciate,
                             new Vector3(i * chunckGridSize.x, j * chunckGridSize.y, 0), Quaternion.identity);
                         cell.instancied = true;
                         
-                        
-                        gcDebug.Add(cell);
-
                     }
                       
                 } 
