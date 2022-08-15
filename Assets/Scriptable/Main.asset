@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d77039fd1e60614ea02b7bd2ffc3694, type: 3}
   m_Name: Main
   m_EditorClassIdentifier: 
-  gridSize: {x: 10, y: 10}
+  gridSize: {x: 25, y: 25}
   chuncksSize: {x: 8, y: 8}
   allChunckLinked: 1
   enableWalls: 1

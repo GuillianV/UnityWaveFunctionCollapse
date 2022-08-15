@@ -41,25 +41,23 @@ public class WaveFunctionCollapse : MonoBehaviour
         JoinPath = new JoinPath();
         
         grid = new GridChunck[wfcData.gridSize.x * wfcData.gridSize.y];
-        Debug.Log(grid.Length);
-        for (int i = 0; i < grid.Length; i++)
-        {
-            grid[i] = new GridChunck(_chunckManager.options.ToArray(), i);
-        }
 
+        int k = 0;
         for (int j = 0; j < wfcData.gridSize.y; j++)
         {
             for (int i = 0; i < wfcData.gridSize.x; i++)
             {
-                GridChunck cell = grid[i + j * wfcData.gridSize.x];
+                GridChunck cell = new GridChunck(_chunckManager.options.ToArray(), k);
+               
                 cell.Xpos = i;
                 cell.Ypos = j;
+                grid[k] = cell;
+                k++;
             }
         }
 
         Draw();
        
-      //  Debug.Log(JoinPath);
         
     }
     
