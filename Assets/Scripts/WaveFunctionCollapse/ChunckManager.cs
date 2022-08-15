@@ -51,27 +51,7 @@ public class ChunckManager : MonoBehaviour
 
     }
     
-  /*  Stopwatch stopwatch = new Stopwatch();
-    private int iter = 0;
-    private int maxIter = 50;
-    private long ticks = 0;
-    
-    stopwatch.Start();
 
-        
-    stopwatch.Stop();
-    iter++;
-    if (iter < maxIter)
-    {
-          
-        ticks = ticks = stopwatch.ElapsedTicks;
-    }
-    else
-    {
-        //Best ~1150
-        Debug.Log(ticks / iter);
-            
-    }*/
 
     
     public List<string> GetNextGridEdgeOptions(int Edge, Option[] fullOptions)
@@ -88,6 +68,6 @@ public class ChunckManager : MonoBehaviour
         return edgeOptions;
     }
     
-    
+    //Best ~1150
     
 }

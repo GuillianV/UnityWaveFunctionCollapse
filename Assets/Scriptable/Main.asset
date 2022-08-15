@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d77039fd1e60614ea02b7bd2ffc3694, type: 3}
+  m_Name: Main
+  m_EditorClassIdentifier: 
+  gridSize: {x: 5, y: 5}
+  chuncksSize: {x: 8, y: 8}
+  allChunckLinked: 1
+  enableWalls: 1
+  edgeToFollow:
+  - 1
+  Chuncks:
+  - {fileID: 11400000, guid: 61bb6d3b38a48cd488bfd55d050c35b5, type: 2}
+  - {fileID: 11400000, guid: 3b15cdbbad4900e449874aa0bd749f46, type: 2}
+  - {fileID: 11400000, guid: 267ed7b0d82a246458863b7220ce6988, type: 2}
+  - {fileID: 11400000, guid: 68c75d201a3728144a7ba769b9ec124c, type: 2}
+  - {fileID: 11400000, guid: dd0e33b1678f03f4a9dd82bd93517343, type: 2}
+  - {fileID: 11400000, guid: 0418f672d83489f45b286b6ed67c7faa, type: 2}
+  - {fileID: 11400000, guid: 7afee5d5f80a0fa4fb11c8c014be29dd, type: 2}
+  - {fileID: 11400000, guid: e0581fdeca4c52a4f9816145139cfd01, type: 2}
+  seed: 1

@@ -166,21 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40c171f6462957f44a5e0ace03e8401d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generateSize: {x: 15, y: 15}
-  chunckGridSize: {x: 8, y: 8}
-  allPathAvailables: 1
-  edgeToFollow:
-  - 1
-  seed: 2
-  Chuncks:
-  - {fileID: 11400000, guid: 61bb6d3b38a48cd488bfd55d050c35b5, type: 2}
-  - {fileID: 11400000, guid: 3b15cdbbad4900e449874aa0bd749f46, type: 2}
-  - {fileID: 11400000, guid: 68c75d201a3728144a7ba769b9ec124c, type: 2}
-  - {fileID: 11400000, guid: 0418f672d83489f45b286b6ed67c7faa, type: 2}
-  - {fileID: 11400000, guid: e0581fdeca4c52a4f9816145139cfd01, type: 2}
-  - {fileID: 11400000, guid: 267ed7b0d82a246458863b7220ce6988, type: 2}
-  - {fileID: 11400000, guid: dd0e33b1678f03f4a9dd82bd93517343, type: 2}
-  - {fileID: 11400000, guid: 7afee5d5f80a0fa4fb11c8c014be29dd, type: 2}
+  wfcData: {fileID: 11400000, guid: 92aef7d3458638e40a1be6d7c0c94eac, type: 2}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
