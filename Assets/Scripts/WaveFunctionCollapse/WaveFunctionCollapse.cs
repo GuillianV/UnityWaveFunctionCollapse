@@ -109,13 +109,13 @@ public class WaveFunctionCollapse : MonoBehaviour
                     if (i > 0)
                     {
                         GridChunck cellLeft = grid[i - 1 + j  * generateSize.x];
-                        List<string> rightOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.RIGHT, cellLeft.optionsAvailable);
+                        List<string> rightOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.RIGHT, cellLeft.optionsAvailable).ToList();
                         List<Option> finalOptions = new List<Option>();
                         rightOptions?.ForEach(rightOption =>
                         {
                             foreach (Option option in cell.optionsAvailable)
                             {
-                                if (option.optionValue.Split('-')[ChunckManager.LEFT] == rightOption)
+                                if (option.optionEdges[ChunckManager.LEFT] == rightOption)
                                 {
                                     finalOptions.Add(option);
                                 }
@@ -142,7 +142,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                     }
                     else if (allPathAvailables && i == 0)
                     {
-                        List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.LEFT, cell.optionsAvailable);
+                        List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.LEFT, cell.optionsAvailable).ToList();
                         List<string> NotallowedLeftOption = leftOptions.Where(l => edgeToFollow.Any(t => t == l)).ToList();
 
                         cell.optionsAvailable = cell.optionsAvailable.Where(optionFull =>
@@ -150,7 +150,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                             bool isInside = true;
                             NotallowedLeftOption?.ForEach(NotallowedLeft =>
                             {
-                                if (optionFull.optionValue.Split('-')[ChunckManager.LEFT].Contains(NotallowedLeft))
+                                if (optionFull.optionEdges[ChunckManager.LEFT].Contains(NotallowedLeft))
                                 {
                                     isInside = false;
                                 }
@@ -167,13 +167,13 @@ public class WaveFunctionCollapse : MonoBehaviour
                     if (j > 0)
                     {
                         GridChunck cellUp = grid[i + (j - 1) * generateSize.y];
-                        List<string> downOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.TOP, cellUp.optionsAvailable);
+                        List<string> downOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.TOP, cellUp.optionsAvailable).ToList();
                         List<Option> finalOptions = new List<Option>();
                         downOptions?.ForEach(downOption =>
                         {
                             foreach (Option option in cell.optionsAvailable)
                             {
-                                if (option.optionValue.Split('-')[ChunckManager.DOWN] == downOption)
+                                if (option.optionEdges[ChunckManager.DOWN] == downOption)
                                 {
                                     finalOptions.Add(option);
                                 }
@@ -199,7 +199,7 @@ public class WaveFunctionCollapse : MonoBehaviour
 
                     } else if (allPathAvailables && j == 0)
                     {
-                        List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.DOWN, cell.optionsAvailable);
+                        List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.DOWN, cell.optionsAvailable).ToList();
                         List<string> NotallowedLeftOption = leftOptions.Where(l => edgeToFollow.Any(t => t == l)).ToList();
 
                         cell.optionsAvailable = cell.optionsAvailable.Where(optionFull =>
@@ -207,7 +207,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                             bool isInside = true;
                             NotallowedLeftOption?.ForEach(NotallowedLeft =>
                             {
-                                if (optionFull.optionValue.Split('-')[ChunckManager.DOWN].Contains(NotallowedLeft))
+                                if (optionFull.optionEdges[ChunckManager.DOWN].Contains(NotallowedLeft))
                                 {
                                     isInside = false;
                                 }
@@ -222,13 +222,13 @@ public class WaveFunctionCollapse : MonoBehaviour
                     if (i < generateSize.x -1 )
                     {
                         GridChunck cellRight = grid[i + 1 + j  * generateSize.x];
-                        List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.LEFT, cellRight.optionsAvailable);
+                        List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.LEFT, cellRight.optionsAvailable).ToList();
                         List<Option> finalOptions = new List<Option>();
                         leftOptions?.ForEach(leftOption =>
                         {
                             foreach (Option option in cell.optionsAvailable)
                             {
-                                if (option.optionValue.Split('-')[ChunckManager.RIGHT] == leftOption)
+                                if (option.optionEdges[ChunckManager.RIGHT] == leftOption)
                                 {
                                     finalOptions.Add(option);
                                 }
@@ -254,7 +254,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                         
                     } else if (allPathAvailables && i < generateSize.x)
                     {
-                        List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.RIGHT, cell.optionsAvailable);
+                        List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.RIGHT, cell.optionsAvailable).ToList();
                         List<string> NotallowedLeftOption = leftOptions.Where(l => edgeToFollow.Any(t => t == l)).ToList();
 
                         cell.optionsAvailable = cell.optionsAvailable.Where(optionFull =>
@@ -262,7 +262,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                             bool isInside = true;
                             NotallowedLeftOption?.ForEach(NotallowedLeft =>
                             {
-                                if (optionFull.optionValue.Split('-')[ChunckManager.RIGHT].Contains(NotallowedLeft))
+                                if (optionFull.optionEdges[ChunckManager.RIGHT].Contains(NotallowedLeft))
                                 {
                                     isInside = false;
                                 }
@@ -277,13 +277,13 @@ public class WaveFunctionCollapse : MonoBehaviour
                     if (j < generateSize.y -1 )
                     {
                         GridChunck cellDown = grid[i + (j + 1) * generateSize.y];
-                        List<string> upOptions= _chunckManager.GetNextGridEdgeOptions(ChunckManager.DOWN, cellDown.optionsAvailable);
+                        List<string> upOptions= _chunckManager.GetNextGridEdgeOptions(ChunckManager.DOWN, cellDown.optionsAvailable).ToList();
                         List<Option> finalOptions = new List<Option>();
                         upOptions?.ForEach(leftOption =>
                         {
                             foreach (Option option in cell.optionsAvailable)
                             {
-                                if (option.optionValue.Split('-')[ChunckManager.TOP] == leftOption)
+                                if (option.optionEdges[ChunckManager.TOP] == leftOption)
                                 {
                                     finalOptions.Add(option);
                                 }
@@ -310,7 +310,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                        
                     }else if (allPathAvailables && j < generateSize.y)
                     {
-                        List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.TOP, cell.optionsAvailable);
+                        List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.TOP, cell.optionsAvailable).ToList();
                         List<string> NotallowedLeftOption = leftOptions.Where(l => edgeToFollow.Any(t => t == l)).ToList();
 
                         cell.optionsAvailable = cell.optionsAvailable.Where(optionFull =>
@@ -318,7 +318,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                             bool isInside = true;
                             NotallowedLeftOption?.ForEach(NotallowedLeft =>
                             {
-                                if (optionFull.optionValue.Split('-')[ChunckManager.TOP].Contains(NotallowedLeft))
+                                if (optionFull.optionEdges[ChunckManager.TOP].Contains(NotallowedLeft))
                                 {
                                     isInside = false;
                                 }
@@ -370,7 +370,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                 {
                     
                     int pathNumber = 0;
-                    foreach (string optionEdge in cell.optionsAvailable[0].optionValue.Split('-'))
+                    foreach (string optionEdge in cell.optionsAvailable[0].optionEdges)
                     {
                         if (edgeToFollow.Contains(optionEdge))
                         {
@@ -418,7 +418,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                         Option optionChoosed = chunckChoosed.optionsAvailable[0];
                         for (var optionAvailableIndex = 0; optionAvailableIndex < chunckChoosed.optionsAvailable.Length; optionAvailableIndex++)
                         {
-                            string[] optionSplited = chunckChoosed.optionsAvailable[optionAvailableIndex].optionValue.Split('-');
+                            string[] optionSplited = chunckChoosed.optionsAvailable[optionAvailableIndex].optionEdges;
                             
                             foreach (string edge in edgeToFollow)
                             {

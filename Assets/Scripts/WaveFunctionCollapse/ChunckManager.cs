@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
-
+using Debug = UnityEngine.Debug;
 
 
 public class ChunckManager : MonoBehaviour
@@ -46,52 +48,44 @@ public class ChunckManager : MonoBehaviour
 
         return _chunckOptions.FirstOrDefault(_chunckOption => _chunckOption.Value.optionValue == _optionValue).Key;
         
-     /*   Options option = options.FirstOrDefault(option => {return option.option == _optionValue;});
-        if (string.IsNullOrEmpty(option.option))
-        {
-            return null;
-        }
-        
-        string[] edges = option.option.Split('-');
-        ChunckData chunckFound = null;
-        
-        foreach (ChunckData chunckData in _chunckDatas)
-        {
-          
-            if (edges.Length == 4)
-            {
-                if (edges[LEFT] == chunckData.Edges.left.patern && edges[TOP] == chunckData.Edges.top.patern && edges[RIGHT] == chunckData.Edges.right.patern  && edges[DOWN] == chunckData.Edges.down.patern  )
-                {
-                    chunckFound = chunckData;
-                }
-           
-            }
-        }
-        
-        return chunckFound; */
 
     }
     
+  /*  Stopwatch stopwatch = new Stopwatch();
+    private int iter = 0;
+    private int maxIter = 50;
+    private long ticks = 0;
+    
+    stopwatch.Start();
+
+        
+    stopwatch.Stop();
+    iter++;
+    if (iter < maxIter)
+    {
+          
+        ticks = ticks = stopwatch.ElapsedTicks;
+    }
+    else
+    {
+        //Best ~1150
+        Debug.Log(ticks / iter);
+            
+    }*/
+
     
     public List<string> GetNextGridEdgeOptions(int Edge, Option[] fullOptions)
     {
-        List<string> edgeOption = new List<string>();
-        if (fullOptions.Length > 0 )
+        List<string> edgeOptions = new List<string>();
+        foreach (Option option in fullOptions)
         {
-            
-                fullOptions?.ToList()?.ForEach(option =>
-                {
-                    string dopt = option.optionValue.Split('-')[Edge];
-                    if (!edgeOption.Contains(dopt))
-                    {
-                        edgeOption.Add(dopt);
-                    }
-                           
-                });
-         
-          
+            string edge = option.optionEdges[Edge];
+            if (!edgeOptions.Contains(edge))
+            {
+                edgeOptions.Add(option.optionEdges[Edge]);
+            }
         }
-        return edgeOption;
+        return edgeOptions;
     }
     
     

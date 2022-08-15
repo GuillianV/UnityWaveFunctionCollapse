@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40c171f6462957f44a5e0ace03e8401d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generateSize: {x: 15, y: 15}
+  generateSize: {x: 5, y: 5}
   chunckGridSize: {x: 8, y: 8}
   allPathAvailables: 1
   edgeToFollow:
