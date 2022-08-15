@@ -44,7 +44,17 @@ public class WaveFunctionCollapse : MonoBehaviour
         Debug.Log(grid.Length);
         for (int i = 0; i < grid.Length; i++)
         {
-            grid[i] = new GridChunck(_chunckManager.options.ToArray());
+            grid[i] = new GridChunck(_chunckManager.options.ToArray(), i);
+        }
+
+        for (int j = 0; j < wfcData.gridSize.y; j++)
+        {
+            for (int i = 0; i < wfcData.gridSize.x; i++)
+            {
+                GridChunck cell = grid[i + j * wfcData.gridSize.x];
+                cell.Xpos = i;
+                cell.Ypos = j;
+            }
         }
 
         Draw();
@@ -56,7 +66,7 @@ public class WaveFunctionCollapse : MonoBehaviour
     
       Stopwatch stopwatch = new Stopwatch();
       private int stiter = 0;
-    private int maxIter = 25;
+    private int maxIter = 100;
     private long ticks = 0;
  
     
@@ -76,12 +86,6 @@ public class WaveFunctionCollapse : MonoBehaviour
         
         for (int j = 0; j < wfcData.gridSize.y; j++) {
             for (int i = 0; i < wfcData.gridSize.x; i++) {
-                
-                
-                
-                
-
-      
                 
                 
                 GridChunck cell = grid[i + j *  wfcData.gridSize.x];
@@ -327,22 +331,12 @@ public class WaveFunctionCollapse : MonoBehaviour
 
         GridChunck chunckChoosed = gridCopy[_random.Next(0, gridCopy.Length)];
         chunckChoosed.collapsed = true;
-        
-        
-   
-        Debug.Log(chunckChoosed);
-       
-        for (int j = 0; j < wfcData.gridSize.y; j++) {
-            for (int i = 0; i < wfcData.gridSize.x; i++)
-            {
-                Debug.Log("X : "+i+" Y : "+j);
-                GridChunck cell = grid[i + j * wfcData.gridSize.x];
-                if (cell.collapsed && !cell.instancied)
-                {
 
-                    
+       
+                if (chunckChoosed.collapsed && !chunckChoosed.instancied)
+                {
                     int pathNumber = 0;
-                    if (cell.optionsAvailable.Length == 0)
+                    if (chunckChoosed.optionsAvailable.Length == 0)
                     {
                         Debug.LogError("Missing chunck to match");
                         
@@ -350,7 +344,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                     else
                     {
                         
-                        foreach (string optionEdge in cell.optionsAvailable[0].optionEdges)
+                        foreach (string optionEdge in chunckChoosed.optionsAvailable[0].optionEdges)
                         {
                             if (wfcData.edgeToFollow.Contains(optionEdge))
                             {
@@ -360,30 +354,30 @@ public class WaveFunctionCollapse : MonoBehaviour
                         }
                             
                         //Si la cell n'est pas connecté a une autre via un chemin disponible (edgeToFollow). Elle n'enregistre pas de path a son actif
-                        if (cell.path.Length == 1 && cell.path[0] == 0)
+                        if (chunckChoosed.path.Length == 1 && chunckChoosed.path[0] == 0)
                         {
                             //On vient compter le numbre d'arretes de sorties disponibles et on vien créer une valeur pour inscrire un nouveau chemin.
                                 
                             //On attribue a la cell un nouvel identifier et on crée un nouveau chemin independant.
-                            cell.path = new []{pathIdentifier} ;
+                            chunckChoosed.path = new []{pathIdentifier} ;
                             JoinPath.path.Add(pathIdentifier,pathNumber);
-                        }else if (cell.path.Length == 1 && cell.path[0] != 0)
+                        }else if (chunckChoosed.path.Length == 1 && chunckChoosed.path[0] != 0)
                         {
                             //Si un seul chemin est disponible, on ajoute le chmin au précedant
-                            JoinPath.AddPath(cell.path[0],pathNumber);
+                            JoinPath.AddPath(chunckChoosed.path[0],pathNumber);
                         }
-                        else if(cell.path.Length > 1)
+                        else if(chunckChoosed.path.Length > 1)
                         {
                             
-                            int[] otherPaths = cell.path.Where(l => l != cell.path[0]).ToArray();
+                            int[] otherPaths = chunckChoosed.path.Where(l => l != chunckChoosed.path[0]).ToArray();
                             
                             //Si plusieurs chemins sont disponible on fusionne les 2
-                            cell =  JoinPath.MergePath(cell);
+                            chunckChoosed =  JoinPath.MergePath(chunckChoosed);
                             foreach (GridChunck gridChunck in grid)
                             {
                                 if (gridChunck.path.Any(p =>  otherPaths.Contains(p)))
                                 {
-                                    gridChunck.path = new int[]{ cell.path[0]};
+                                    gridChunck.path = new int[]{ chunckChoosed.path[0]};
                                 }
                             }
 
@@ -391,7 +385,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                         }
 
 
-                        if (cell.isLastOutput && wfcData.allChunckLinked)
+                        if (chunckChoosed.isLastOutput && wfcData.allChunckLinked)
                         {
                             int oldCount = 0;
                             int count = 0;
@@ -430,31 +424,35 @@ public class WaveFunctionCollapse : MonoBehaviour
 
                         }
                         
-                        string index = cell.optionsAvailable[0].optionValue;
+                        string index = chunckChoosed.optionsAvailable[0].optionValue;
 
                         ChunckData? chunckFound = _chunckManager.GetChunck(index);
                         if (chunckFound != null )
                         {
                             Instantiate(chunckFound.assetsToInstanciate,
-                                new Vector3(i * wfcData.chuncksSize.x, j * wfcData.chuncksSize.y, 0), Quaternion.identity);
-                            cell.instancied = true;
+                                new Vector3(chunckChoosed.Xpos * wfcData.chuncksSize.x, chunckChoosed.Ypos * wfcData.chuncksSize.y, 0), Quaternion.identity);
+                            chunckChoosed.instancied = true;
                             
                         }
                     }
                 } 
-            }
-        }
+    
 
         stiter++;
         stopwatch.Stop();
         if (stiter >= maxIter)
         {
+            
+            //5*5 150000 t
+            
+            // 18 000 t
+            
             long t = stopwatch.ElapsedTicks / stiter;
-            long tiime = stopwatch.ElapsedMilliseconds / 25;
+            long tiime = stopwatch.ElapsedMilliseconds / maxIter;
             Debug.Log(tiime);
             stopwatch.Reset();
             stiter = 0;
-            return;
+           // return;
         }
         else
         {

@@ -8,12 +8,17 @@ public class GridChunck
     public bool instancied = false;
     public int[] path = new []{0};
     public bool isLastOutput = false;
-    
+
     public Option[] optionsAvailable;
 
-    public GridChunck(Option[] _optionsAvailable)
+    public int gridValue;
+    public int Xpos;
+    public int Ypos;
+    
+    public GridChunck(Option[] _optionsAvailable, int _gridValue)
     {
         optionsAvailable = _optionsAvailable;
+        gridValue = _gridValue;
     }
     
 }
