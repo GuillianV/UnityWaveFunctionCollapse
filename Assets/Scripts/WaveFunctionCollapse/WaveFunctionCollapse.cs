@@ -66,7 +66,7 @@ public class WaveFunctionCollapse : MonoBehaviour
     
       Stopwatch stopwatch = new Stopwatch();
       private int stiter = 0;
-    private int maxIter = 100;
+    private int maxIter = 25;
     private long ticks = 0;
  
     
@@ -339,7 +339,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                     if (chunckChoosed.optionsAvailable.Length == 0)
                     {
                         Debug.LogError("Missing chunck to match");
-                        
+                        chunckChoosed.instancied = true;
                     }
                     else
                     {
