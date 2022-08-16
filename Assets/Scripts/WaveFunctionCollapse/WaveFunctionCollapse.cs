@@ -131,10 +131,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                         bool isAlone = true;
                         List<int> availablePath = new List<int>();
 
-                        if (!isFirstTime)
-                        {
-                            cell.isAlone = false;
-                        }
+                      
                         
                         List<GridChunckOption> gridChunckOptions = new List<GridChunckOption>();
 
@@ -168,11 +165,11 @@ public class WaveFunctionCollapse : MonoBehaviour
                             , _gridChunck.Ypos < wfcData.gridSize.y -1
                             , wfcData.enableWalls && _gridChunck.Ypos < wfcData.gridSize.y
                             , ChunckManager.DOWN
-                            , ChunckManager.TOP)); 
+                            , ChunckManager.TOP));
 
 
-                       
-                        
+
+                        bool isNextToInstancied = false; 
                         foreach (GridChunckOption chunckOption in gridChunckOptions)
                         {
 
@@ -183,9 +180,9 @@ public class WaveFunctionCollapse : MonoBehaviour
                                 {
 
                                     GridChunck nearCell = grid[chunckOption.gridChunckIndex];
-                                    if (!isFirstTime)
+                                    if (nearCell.collapsed)
                                     {
-                                        nearCell.isAlone = false;
+                                        isNextToInstancied = true;
                                     }
                                     
                                          
@@ -243,8 +240,27 @@ public class WaveFunctionCollapse : MonoBehaviour
                             }
                           
                         }
-                        
-                        
+
+                        if (!isFirstTime && isNextToInstancied)
+                        {
+                            foreach (GridChunckOption chunckOption in gridChunckOptions)
+                            {
+                            
+                                if (chunckOption.expressionValue)
+                                {
+
+                                    GridChunck nearCell = grid[chunckOption.gridChunckIndex];
+                                    nearCell.isAlone = false;
+                                }
+                            
+                            }
+                        }
+
+                       
+
+
+
+
                         if (!isAlone && wfcData.allChunckLinked)
                         {
 
@@ -278,19 +294,31 @@ public class WaveFunctionCollapse : MonoBehaviour
                     }
                 }
             }
+            else if (iter == 2)
+            {
+                foreach (GridChunck gridChunck in grid)
+                {
+                    if (gridChunck.instancied == false)
+                    {
+                        CheckOptions(gridChunck,false);
+                    }
+                }    
+
+            }
             else
             {
-          
+                //grid.Where(gridChunck => gridChunck.instancied == false && gridChunck.isAlone == false);
                 foreach (GridChunck gridChunck in grid)
-                {//&& (gridChunck.isAlone == false)
-                    if (gridChunck.instancied == false )
+                {
+                    if (gridChunck.instancied == false && gridChunck.isAlone == false)
                     {
                         CheckOptions(gridChunck,false);
                     }
                 } 
-                
-               
+
             }
+          
+              
 
           
             
@@ -402,8 +430,6 @@ public class WaveFunctionCollapse : MonoBehaviour
                         ChunckData? chunckFound = _chunckManager.GetChunck(index);
                         if (chunckFound != null )
                         {
-                            chunckChoosed.isAlone = true;
-                            
                             _gridChuncksQueue.Enqueue(new KeyValuePair<GridChunck, ChunckData>(chunckChoosed,chunckFound) );
                             
                            // Instantiate(chunckFound.assetsToInstanciate,new Vector3(chunckChoosed.Xpos * wfcData.chuncksSize.x, chunckChoosed.Ypos * wfcData.chuncksSize.y, 0), Quaternion.identity);
