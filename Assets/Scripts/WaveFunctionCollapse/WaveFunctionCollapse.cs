@@ -24,6 +24,8 @@ public class WaveFunctionCollapse : MonoBehaviour
     private JoinPath JoinPath;
     private GridChunck [] grid ;
 
+    private List<Option> MissingOptions = new List<Option>();
+
     private Queue<KeyValuePair<GridChunck,ChunckData>> _gridChuncksQueue = new Queue<KeyValuePair<GridChunck,ChunckData>>();
 
     Stopwatch stopwatch = new Stopwatch();
@@ -99,24 +101,6 @@ public class WaveFunctionCollapse : MonoBehaviour
         
     }
     
-  public struct GridChunckOption
-  {
-      public int gridChunckIndex;
-      public bool expressionValue;
-      public bool oppositeExpressionValue;
-      public int primaryEdgeOption;
-      public int oppositeEdgeOption;
-
-      public GridChunckOption(int _gridChunckIndex, bool _expressionValue, bool _oppositeExpressionValue, int _primaryEdgeOption, int _oppositeEdgeOption )
-      {
-
-          gridChunckIndex = _gridChunckIndex;
-          expressionValue = _expressionValue;
-          oppositeExpressionValue = _oppositeExpressionValue;
-          primaryEdgeOption = _primaryEdgeOption;
-          oppositeEdgeOption = _oppositeEdgeOption;
-      }
-  }
 
 
 
@@ -169,76 +153,68 @@ public class WaveFunctionCollapse : MonoBehaviour
 
 
 
+                        List<string> optionMissingValue = new List<string>();
                         bool isNextToInstancied = false; 
                         foreach (GridChunckOption chunckOption in gridChunckOptions)
                         {
 
-                            try
+                            if (chunckOption.expressionValue)
                             {
-  
-                                if (chunckOption.expressionValue)
-                                {
 
-                                    GridChunck nearCell = grid[chunckOption.gridChunckIndex];
-                                    if (nearCell.collapsed)
+                                GridChunck nearCell = grid[chunckOption.gridChunckIndex];
+                               
+                                List<string> nearOptions = _chunckManager.GetNextGridEdgeOptions(chunckOption.primaryEdgeOption, nearCell.optionsAvailable).ToList();
+                                List<Option> finalOptions = new List<Option>();
+                                nearOptions?.ForEach(nearOption =>
+                                {
+                                    foreach (Option option in cell.optionsAvailable)
                                     {
-                                        isNextToInstancied = true;
-                                    }
-                                    
-                                         
-                                    List<string> nearOptions = _chunckManager.GetNextGridEdgeOptions(chunckOption.primaryEdgeOption, nearCell.optionsAvailable).ToList();
-                                    List<Option> finalOptions = new List<Option>();
-                                    nearOptions?.ForEach(nearOption =>
-                                    {
-                                        foreach (Option option in cell.optionsAvailable)
+                                        if (option.optionEdges[chunckOption.oppositeEdgeOption] == nearOption)
                                         {
-                                            if (option.optionEdges[chunckOption.oppositeEdgeOption] == nearOption)
-                                            {
-                                                finalOptions.Add(option);
-                                            }
+                                            finalOptions.Add(option);
                                         }
-                                    });
-                                
+                                    }
+                                });
+                          
+                                if (nearCell.collapsed)
+                                {
+                                    isNextToInstancied = true;
                                     
-                                    if (nearCell.collapsed && nearCell.instancied)
+                                    if (nearCell.instancied)
                                     {
-                                   
                                         if (wfcData.edgeToFollow.Contains(_chunckManager.GetNextGridEdgeOptions(chunckOption.primaryEdgeOption, nearCell.optionsAvailable)[0]))
                                         {
                                             isAlone = false;
                                             availablePath.AddRange( nearCell.path);
                                         }
                                     }
-
-                                    cell.optionsAvailable = finalOptions.ToArray();
-
+                               
+                                   
                                 }
-                                else if (chunckOption.oppositeExpressionValue)
-                                {
-                                    List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(chunckOption.oppositeEdgeOption, cell.optionsAvailable).ToList();
-                                    List<string> NotallowedLeftOption = leftOptions.Where(l => wfcData.edgeToFollow.Any(t => t == l)).ToList();
+                                
+                                cell.optionsAvailable = finalOptions.ToArray();
 
-                                    cell.optionsAvailable = cell.optionsAvailable.Where(optionFull =>
-                                    {
-                                        bool isInside = true;
-                                        NotallowedLeftOption?.ForEach(NotallowedLeft =>
-                                        {
-                                            if (optionFull.optionEdges[chunckOption.oppositeEdgeOption].Contains(NotallowedLeft))
-                                            {
-                                                isInside = false;
-                                            }
-                                        });
-
-                                        return isInside;
-
-                                    }).ToArray();
-                                }
                             }
-                            catch (Exception e)
+                            else if (chunckOption.oppositeExpressionValue)
                             {
-                               Debug.Log(chunckOption);
+                                List<string> AllEdgesAvailableOptions = _chunckManager.GetNextGridEdgeOptions(chunckOption.oppositeEdgeOption, cell.optionsAvailable).ToList();
+                                List<string> NotAllowedOptions = AllEdgesAvailableOptions.Where(edge => wfcData.edgeToFollow.Any(WFCedge => WFCedge == edge)).ToList();
+                                cell.optionsAvailable = cell.optionsAvailable.Where(optionFull =>
+                                {
+                                    bool isInside = true;
+                                    NotAllowedOptions?.ForEach(NotallowedLeft =>
+                                    {
+                                        if (optionFull.optionEdges[chunckOption.oppositeEdgeOption].Contains(NotallowedLeft))
+                                        {
+                                            isInside = false;
+                                        }
+                                    });
+
+                                    return isInside;
+
+                                }).ToArray();
                             }
-                          
+                           
                         }
 
                         if (!isFirstTime && isNextToInstancied)
@@ -257,10 +233,6 @@ public class WaveFunctionCollapse : MonoBehaviour
                         }
 
                        
-
-
-
-
                         if (!isAlone && wfcData.allChunckLinked)
                         {
 
@@ -271,7 +243,9 @@ public class WaveFunctionCollapse : MonoBehaviour
                                 cell.path = availablePath.ToArray();
                                 
                             }
+                            
                         }
+
                     } 
     }
     
@@ -339,6 +313,10 @@ public class WaveFunctionCollapse : MonoBehaviour
                     int pathNumber = 0;
                     if (chunckChoosed.optionsAvailable.Length == 0)
                     {
+                        
+                        
+                        
+                        
                         Debug.LogError("Missing chunck to match");
                         chunckChoosed.instancied = true;
                     }
