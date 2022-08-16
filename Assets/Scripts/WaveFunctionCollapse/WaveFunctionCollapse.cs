@@ -99,7 +99,13 @@ public class WaveFunctionCollapse : MonoBehaviour
         
     }
     
-  
+  public struct GridChunckOption
+  {
+      public GridChunck _gridChunck;
+      public bool expressionValue;
+      public bool oppositeExpressionValue;
+      public int primaryEdgeOption;
+  }
 
 
 
