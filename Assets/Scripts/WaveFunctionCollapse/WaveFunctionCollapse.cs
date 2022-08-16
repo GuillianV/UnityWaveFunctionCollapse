@@ -357,16 +357,14 @@ public class WaveFunctionCollapse : MonoBehaviour
             }
             else
             {
-                
-                
+         
                 foreach (GridChunck gridChunck in grid)
                 {
-                    if (gridChunck.instancied == false && (gridChunck.isAlone == false || gridChunck.optionsAvailable.Length < 3))
+                    if (gridChunck.instancied == false && (gridChunck.isAlone == false && gridChunck.optionsAvailable.Length < 3))
                     {
                         CheckOptions(gridChunck);
                     }
-                }
-               
+                } 
             }
 
           
