@@ -23,9 +23,14 @@ public class WaveFunctionCollapse : MonoBehaviour
     private System.Random _random;
     private JoinPath JoinPath;
     private GridChunck [] grid ;
+
+    private Queue<KeyValuePair<GridChunck,ChunckData>> _gridChuncksQueue = new Queue<KeyValuePair<GridChunck,ChunckData>>();
+
+    Stopwatch stopwatch = new Stopwatch();
+    private int stiter = 0;
+    private long ticks = 0;
     
     
-  
     // Start is called before the first frame update
     void Start()
     {
@@ -56,19 +61,49 @@ public class WaveFunctionCollapse : MonoBehaviour
             }
         }
 
-        Draw();
-       
+        
+          
+   
+        
+        foreach (var gridChunck in grid)
+        {
+            
+            stopwatch.Start();
+
+
+            Draw();
+            
+            stiter++;
+            stopwatch.Stop();
+            if (stiter >= wfcData.gridSize.x * wfcData.gridSize.y )
+            {
+            
+                //5*5 150000 t
+            
+                // 18 000 t
+            
+                long t = stopwatch.ElapsedTicks / stiter;
+                long tiime = stopwatch.ElapsedMilliseconds / ( wfcData.gridSize.x * wfcData.gridSize.y);
+                Debug.Log(tiime);
+                stopwatch.Reset();
+                stiter = 0;
+                // return;
+            }
+            else
+            {
+                ticks = ticks + stopwatch.ElapsedTicks;
+            }
+
+        }
+        
         
     }
     
-    
-      Stopwatch stopwatch = new Stopwatch();
-      private int stiter = 0;
-    private long ticks = 0;
+  
 
 
 
-    public void CheckOptions(GridChunck _gridChunck)
+    public void CheckOptions(GridChunck _gridChunck, bool isFirstTime)
     {
           
                     GridChunck cell = grid[_gridChunck.Xpos + _gridChunck.Ypos *  wfcData.gridSize.x];
@@ -77,7 +112,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                         bool isAlone = true;
                         List<int> availablePath = new List<int>();
 
-                        if (iter != 1)
+                        if (!isFirstTime)
                         {
                             cell.isAlone = false;
                         }
@@ -88,7 +123,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                         if (_gridChunck.Xpos > 0)
                         {
                             GridChunck cellLeft = grid[_gridChunck.Xpos - 1 + _gridChunck.Ypos  * wfcData.gridSize.x];
-                            if (iter != 1)
+                            if (!isFirstTime)
                             {
                                 cellLeft.isAlone = false;
                             }
@@ -147,7 +182,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                         if (_gridChunck.Ypos > 0)
                         {
                             GridChunck cellUp = grid[_gridChunck.Xpos + (_gridChunck.Ypos - 1) * wfcData.gridSize.x];
-                            if (iter != 1)
+                            if (!isFirstTime)
                             {
                                 cellUp.isAlone = false;
                             }
@@ -205,7 +240,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                         if (_gridChunck.Xpos < wfcData.gridSize.x -1 )
                         {
                             GridChunck cellRight = grid[_gridChunck.Xpos + 1 + _gridChunck.Ypos  * wfcData.gridSize.x];
-                            if (iter != 1)
+                            if (!isFirstTime)
                             {
                                 cellRight.isAlone = false;
                             }
@@ -264,7 +299,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                         if (_gridChunck.Ypos < wfcData.gridSize.y -1 )
                         {
                             GridChunck cellDown = grid[ _gridChunck.Xpos + (_gridChunck.Ypos + 1) * wfcData.gridSize.x];
-                            if (iter != 1)
+                            if (!isFirstTime)
                             {
                                 cellDown.isAlone = false;
                             }
@@ -338,9 +373,7 @@ public class WaveFunctionCollapse : MonoBehaviour
     public void Draw()
     {
    
-        stopwatch.Start();
-        
-        
+      
         if (iter < wfcData.gridSize.x*wfcData.gridSize.y )
         {
             iter++;
@@ -351,20 +384,22 @@ public class WaveFunctionCollapse : MonoBehaviour
                 {
                     if (gridChunck.instancied == false)
                     {
-                        CheckOptions(gridChunck);
+                        CheckOptions(gridChunck,true);
                     }
                 }
             }
             else
             {
-         
+          
                 foreach (GridChunck gridChunck in grid)
                 {
-                    if (gridChunck.instancied == false && (gridChunck.isAlone == false && gridChunck.optionsAvailable.Length < 3))
+                    if (gridChunck.instancied == false && (gridChunck.isAlone == false))
                     {
-                        CheckOptions(gridChunck);
+                        CheckOptions(gridChunck,false);
                     }
                 } 
+                
+               
             }
 
           
@@ -479,43 +514,32 @@ public class WaveFunctionCollapse : MonoBehaviour
                         {
                             chunckChoosed.isAlone = true;
                             
-                            Instantiate(chunckFound.assetsToInstanciate,
-                                new Vector3(chunckChoosed.Xpos * wfcData.chuncksSize.x, chunckChoosed.Ypos * wfcData.chuncksSize.y, 0), Quaternion.identity);
+                            _gridChuncksQueue.Enqueue(new KeyValuePair<GridChunck, ChunckData>(chunckChoosed,chunckFound) );
+                            
+                           // Instantiate(chunckFound.assetsToInstanciate,new Vector3(chunckChoosed.Xpos * wfcData.chuncksSize.x, chunckChoosed.Ypos * wfcData.chuncksSize.y, 0), Quaternion.identity);
                             chunckChoosed.instancied = true;
                             
                         }
                     }
                 } 
     
-        stiter++;
-        stopwatch.Stop();
-        if (stiter >= wfcData.gridSize.x * wfcData.gridSize.y )
-        {
-            
-            //5*5 150000 t
-            
-            // 18 000 t
-            
-            long t = stopwatch.ElapsedTicks / stiter;
-            long tiime = stopwatch.ElapsedMilliseconds / ( wfcData.gridSize.x * wfcData.gridSize.y);
-            Debug.Log(tiime);
-            stopwatch.Reset();
-            stiter = 0;
-           // return;
-        }
-        else
-        {
-            ticks = ticks + stopwatch.ElapsedTicks;
-        }
-        
+   
        
-      
-    
-        
-        Draw();
         }
         
     }
-    
-    
+
+    private void Update() 
+    {
+       
+            
+            while (_gridChuncksQueue.Count > 0)
+            {
+                KeyValuePair<GridChunck, ChunckData> chunckChoosed = _gridChuncksQueue.Dequeue();
+                Instantiate(chunckChoosed.Value.assetsToInstanciate,new Vector3(chunckChoosed.Key.Xpos * wfcData.chuncksSize.x, chunckChoosed.Key.Ypos * wfcData.chuncksSize.y, 0), Quaternion.identity);
+            }
+
+        
+        
+    }
 }
