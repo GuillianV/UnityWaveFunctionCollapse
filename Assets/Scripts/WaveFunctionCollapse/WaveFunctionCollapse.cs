@@ -64,11 +64,275 @@ public class WaveFunctionCollapse : MonoBehaviour
     
       Stopwatch stopwatch = new Stopwatch();
       private int stiter = 0;
-    private int maxIter = 25;
     private long ticks = 0;
- 
-    
-    
+
+
+
+    public void CheckOptions(GridChunck _gridChunck)
+    {
+          
+                    GridChunck cell = grid[_gridChunck.Xpos + _gridChunck.Ypos *  wfcData.gridSize.x];
+                    if (!cell.collapsed)
+                    {
+                        bool isAlone = true;
+                        List<int> availablePath = new List<int>();
+
+                        if (iter != 1)
+                        {
+                            cell.isAlone = false;
+                        }
+
+                        
+                        
+                        //LEFT
+                        if (_gridChunck.Xpos > 0)
+                        {
+                            GridChunck cellLeft = grid[_gridChunck.Xpos - 1 + _gridChunck.Ypos  * wfcData.gridSize.x];
+                            if (iter != 1)
+                            {
+                                cellLeft.isAlone = false;
+                            }
+                           
+                            List<string> rightOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.RIGHT, cellLeft.optionsAvailable).ToList();
+                            List<Option> finalOptions = new List<Option>();
+                            rightOptions?.ForEach(rightOption =>
+                            {
+                                foreach (Option option in cell.optionsAvailable)
+                                {
+                                    if (option.optionEdges[ChunckManager.LEFT] == rightOption)
+                                    {
+                                        finalOptions.Add(option);
+                                    }
+                                }
+                            });
+                            
+                            
+                            if (cellLeft.collapsed && cellLeft.instancied)
+                            {
+                               
+                                if (wfcData.edgeToFollow.Contains(_chunckManager.GetNextGridEdgeOptions(ChunckManager.RIGHT, cellLeft.optionsAvailable)[0]))
+                                {
+                                    isAlone = false;
+                                    availablePath.AddRange( cellLeft.path);
+                                }
+                            }
+
+                            cell.optionsAvailable = finalOptions.ToArray();
+                        
+                        }
+                        else if (wfcData.enableWalls && _gridChunck.Xpos == 0)
+                        {
+                            List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.LEFT, cell.optionsAvailable).ToList();
+                            List<string> NotallowedLeftOption = leftOptions.Where(l => wfcData.edgeToFollow.Any(t => t == l)).ToList();
+
+                            cell.optionsAvailable = cell.optionsAvailable.Where(optionFull =>
+                            {
+                                bool isInside = true;
+                                NotallowedLeftOption?.ForEach(NotallowedLeft =>
+                                {
+                                    if (optionFull.optionEdges[ChunckManager.LEFT].Contains(NotallowedLeft))
+                                    {
+                                        isInside = false;
+                                    }
+                                });
+
+                                return isInside;
+
+                            }).ToArray();
+                           
+                        }
+                        
+                        
+                        //UP
+                        if (_gridChunck.Ypos > 0)
+                        {
+                            GridChunck cellUp = grid[_gridChunck.Xpos + (_gridChunck.Ypos - 1) * wfcData.gridSize.x];
+                            if (iter != 1)
+                            {
+                                cellUp.isAlone = false;
+                            }
+                                
+                            
+                            
+                            List<string> downOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.TOP, cellUp.optionsAvailable).ToList();
+                            List<Option> finalOptions = new List<Option>();
+                            downOptions?.ForEach(downOption =>
+                            {
+                                foreach (Option option in cell.optionsAvailable)
+                                {
+                                    if (option.optionEdges[ChunckManager.DOWN] == downOption)
+                                    {
+                                        finalOptions.Add(option);
+                                    }
+                                }
+                            });
+                            
+                            
+                            if (cellUp.collapsed && cellUp.instancied)
+                            {
+                               
+                                if (wfcData.edgeToFollow.Contains(_chunckManager.GetNextGridEdgeOptions(ChunckManager.TOP, cellUp.optionsAvailable)[0]))
+                                {
+                                    isAlone = false;
+                                    availablePath.AddRange( cellUp.path);
+                                }
+                            }
+
+                            cell.optionsAvailable = finalOptions.ToArray();
+
+                        } else if (wfcData.enableWalls && _gridChunck.Ypos == 0)
+                        {
+                            List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.DOWN, cell.optionsAvailable).ToList();
+                            List<string> NotallowedLeftOption = leftOptions.Where(l => wfcData.edgeToFollow.Any(t => t == l)).ToList();
+
+                            cell.optionsAvailable = cell.optionsAvailable.Where(optionFull =>
+                            {
+                                bool isInside = true;
+                                NotallowedLeftOption?.ForEach(NotallowedLeft =>
+                                {
+                                    if (optionFull.optionEdges[ChunckManager.DOWN].Contains(NotallowedLeft))
+                                    {
+                                        isInside = false;
+                                    }
+                                });
+
+                                return isInside;
+
+                            }).ToArray();
+                           
+                        }
+                        //RIGHT
+                        if (_gridChunck.Xpos < wfcData.gridSize.x -1 )
+                        {
+                            GridChunck cellRight = grid[_gridChunck.Xpos + 1 + _gridChunck.Ypos  * wfcData.gridSize.x];
+                            if (iter != 1)
+                            {
+                                cellRight.isAlone = false;
+                            }
+                               
+                            
+                            List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.LEFT, cellRight.optionsAvailable).ToList();
+                            List<Option> finalOptions = new List<Option>();
+                            leftOptions?.ForEach(leftOption =>
+                            {
+                                foreach (Option option in cell.optionsAvailable)
+                                {
+                                    if (option.optionEdges[ChunckManager.RIGHT] == leftOption)
+                                    {
+                                        finalOptions.Add(option);
+                                    }
+                                }
+                            });
+                            
+                            
+                            if (cellRight.collapsed && cellRight.instancied)
+                            {
+                               
+                                if (wfcData.edgeToFollow.Contains(_chunckManager.GetNextGridEdgeOptions(ChunckManager.LEFT, cellRight.optionsAvailable)[0]))
+                                {
+                                    isAlone = false;
+                                    availablePath.AddRange( cellRight.path);
+                                 
+                                    
+                                }
+                            }
+
+                            cell.optionsAvailable = finalOptions.ToArray();
+                            
+                        } else if (wfcData.enableWalls && _gridChunck.Xpos < wfcData.gridSize.x)
+                        {
+                            List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.RIGHT, cell.optionsAvailable).ToList();
+                            List<string> NotallowedLeftOption = leftOptions.Where(l => wfcData.edgeToFollow.Any(t => t == l)).ToList();
+
+                            cell.optionsAvailable = cell.optionsAvailable.Where(optionFull =>
+                            {
+                                bool isInside = true;
+                                NotallowedLeftOption?.ForEach(NotallowedLeft =>
+                                {
+                                    if (optionFull.optionEdges[ChunckManager.RIGHT].Contains(NotallowedLeft))
+                                    {
+                                        isInside = false;
+                                    }
+                                });
+
+                                return isInside;
+
+                            }).ToArray();
+                           
+                        }
+                        //DOWN
+                        if (_gridChunck.Ypos < wfcData.gridSize.y -1 )
+                        {
+                            GridChunck cellDown = grid[ _gridChunck.Xpos + (_gridChunck.Ypos + 1) * wfcData.gridSize.x];
+                            if (iter != 1)
+                            {
+                                cellDown.isAlone = false;
+                            }
+                                
+                            List<string> upOptions= _chunckManager.GetNextGridEdgeOptions(ChunckManager.DOWN, cellDown.optionsAvailable).ToList();
+                            List<Option> finalOptions = new List<Option>();
+                            upOptions?.ForEach(leftOption =>
+                            {
+                                foreach (Option option in cell.optionsAvailable)
+                                {
+                                    if (option.optionEdges[ChunckManager.TOP] == leftOption)
+                                    {
+                                        finalOptions.Add(option);
+                                    }
+                                }
+                            });
+                            
+                            
+                            if (cellDown.collapsed && cellDown.instancied)
+                            {
+                               
+                                if (wfcData.edgeToFollow.Contains(_chunckManager.GetNextGridEdgeOptions(ChunckManager.DOWN, cellDown.optionsAvailable)[0]))
+                                {
+                                    isAlone = false;
+                                    availablePath.AddRange( cellDown.path);
+
+                                }
+                            }
+
+                            cell.optionsAvailable = finalOptions.ToArray();
+                            
+                           
+                        }else if (wfcData.enableWalls && _gridChunck.Ypos < wfcData.gridSize.y)
+                        {
+                            List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.TOP, cell.optionsAvailable).ToList();
+                            List<string> NotallowedLeftOption = leftOptions.Where(l => wfcData.edgeToFollow.Any(t => t == l)).ToList();
+
+                            cell.optionsAvailable = cell.optionsAvailable.Where(optionFull =>
+                            {
+                                bool isInside = true;
+                                NotallowedLeftOption?.ForEach(NotallowedLeft =>
+                                {
+                                    if (optionFull.optionEdges[ChunckManager.TOP].Contains(NotallowedLeft))
+                                    {
+                                        isInside = false;
+                                    }
+                                });
+
+                                return isInside;
+
+                            }).ToArray();
+                           
+                        }
+
+
+                        if (!isAlone && wfcData.allChunckLinked)
+                        {
+
+                             availablePath.Remove(0);
+
+                            if (availablePath.Count > 0)
+                            {  
+                                cell.path = availablePath.ToArray();
+                                
+                            }
+                        }
+                    } 
+    }
     
 
     public void Draw()
@@ -80,255 +344,43 @@ public class WaveFunctionCollapse : MonoBehaviour
         if (iter < wfcData.gridSize.x*wfcData.gridSize.y )
         {
             iter++;
-   
-        
-        for (int j = 0; j < wfcData.gridSize.y; j++) {
-            for (int i = 0; i < wfcData.gridSize.x; i++) {
-                
-                
-                GridChunck cell = grid[i + j *  wfcData.gridSize.x];
-                if (!cell.collapsed)
+
+            if (iter == 1)
+            {
+                foreach (GridChunck gridChunck in grid)
                 {
-                    bool isAlone = true;
-                    List<int> availablePath = new List<int>();
-              
-                    
-                    //LEFT
-                    if (i > 0)
+                    if (gridChunck.instancied == false)
                     {
-                        GridChunck cellLeft = grid[i - 1 + j  * wfcData.gridSize.x];
-                        List<string> rightOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.RIGHT, cellLeft.optionsAvailable).ToList();
-                        List<Option> finalOptions = new List<Option>();
-                        rightOptions?.ForEach(rightOption =>
-                        {
-                            foreach (Option option in cell.optionsAvailable)
-                            {
-                                if (option.optionEdges[ChunckManager.LEFT] == rightOption)
-                                {
-                                    finalOptions.Add(option);
-                                }
-                            }
-                        });
-                        
-                        
-                        if (cellLeft.collapsed && cellLeft.instancied)
-                        {
-                           
-                            if (wfcData.edgeToFollow.Contains(_chunckManager.GetNextGridEdgeOptions(ChunckManager.RIGHT, cellLeft.optionsAvailable)[0]))
-                            {
-                                isAlone = false;
-                                availablePath.AddRange( cellLeft.path);
-                            }
-                        }
-
-                        cell.optionsAvailable = finalOptions.ToArray();
-                    
+                        CheckOptions(gridChunck);
                     }
-                    else if (wfcData.enableWalls && i == 0)
-                    {
-                        List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.LEFT, cell.optionsAvailable).ToList();
-                        List<string> NotallowedLeftOption = leftOptions.Where(l => wfcData.edgeToFollow.Any(t => t == l)).ToList();
-
-                        cell.optionsAvailable = cell.optionsAvailable.Where(optionFull =>
-                        {
-                            bool isInside = true;
-                            NotallowedLeftOption?.ForEach(NotallowedLeft =>
-                            {
-                                if (optionFull.optionEdges[ChunckManager.LEFT].Contains(NotallowedLeft))
-                                {
-                                    isInside = false;
-                                }
-                            });
-
-                            return isInside;
-
-                        }).ToArray();
-                       
-                    }
-                    
-                    
-                    //UP
-                    if (j > 0)
-                    {
-                        GridChunck cellUp = grid[i + (j - 1) * wfcData.gridSize.x];
-                        List<string> downOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.TOP, cellUp.optionsAvailable).ToList();
-                        List<Option> finalOptions = new List<Option>();
-                        downOptions?.ForEach(downOption =>
-                        {
-                            foreach (Option option in cell.optionsAvailable)
-                            {
-                                if (option.optionEdges[ChunckManager.DOWN] == downOption)
-                                {
-                                    finalOptions.Add(option);
-                                }
-                            }
-                        });
-                        
-                        
-                        if (cellUp.collapsed && cellUp.instancied)
-                        {
-                           
-                            if (wfcData.edgeToFollow.Contains(_chunckManager.GetNextGridEdgeOptions(ChunckManager.TOP, cellUp.optionsAvailable)[0]))
-                            {
-                                isAlone = false;
-                                availablePath.AddRange( cellUp.path);
-                            }
-                        }
-
-                        cell.optionsAvailable = finalOptions.ToArray();
-
-                    } else if (wfcData.enableWalls && j == 0)
-                    {
-                        List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.DOWN, cell.optionsAvailable).ToList();
-                        List<string> NotallowedLeftOption = leftOptions.Where(l => wfcData.edgeToFollow.Any(t => t == l)).ToList();
-
-                        cell.optionsAvailable = cell.optionsAvailable.Where(optionFull =>
-                        {
-                            bool isInside = true;
-                            NotallowedLeftOption?.ForEach(NotallowedLeft =>
-                            {
-                                if (optionFull.optionEdges[ChunckManager.DOWN].Contains(NotallowedLeft))
-                                {
-                                    isInside = false;
-                                }
-                            });
-
-                            return isInside;
-
-                        }).ToArray();
-                       
-                    }
-                    //RIGHT
-                    if (i < wfcData.gridSize.x -1 )
-                    {
-                        GridChunck cellRight = grid[i + 1 + j  * wfcData.gridSize.x];
-                        List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.LEFT, cellRight.optionsAvailable).ToList();
-                        List<Option> finalOptions = new List<Option>();
-                        leftOptions?.ForEach(leftOption =>
-                        {
-                            foreach (Option option in cell.optionsAvailable)
-                            {
-                                if (option.optionEdges[ChunckManager.RIGHT] == leftOption)
-                                {
-                                    finalOptions.Add(option);
-                                }
-                            }
-                        });
-                        
-                        
-                        if (cellRight.collapsed && cellRight.instancied)
-                        {
-                           
-                            if (wfcData.edgeToFollow.Contains(_chunckManager.GetNextGridEdgeOptions(ChunckManager.LEFT, cellRight.optionsAvailable)[0]))
-                            {
-                                isAlone = false;
-                                availablePath.AddRange( cellRight.path);
-                             
-                                
-                            }
-                        }
-
-                        cell.optionsAvailable = finalOptions.ToArray();
-                        
-                    } else if (wfcData.enableWalls && i < wfcData.gridSize.x)
-                    {
-                        List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.RIGHT, cell.optionsAvailable).ToList();
-                        List<string> NotallowedLeftOption = leftOptions.Where(l => wfcData.edgeToFollow.Any(t => t == l)).ToList();
-
-                        cell.optionsAvailable = cell.optionsAvailable.Where(optionFull =>
-                        {
-                            bool isInside = true;
-                            NotallowedLeftOption?.ForEach(NotallowedLeft =>
-                            {
-                                if (optionFull.optionEdges[ChunckManager.RIGHT].Contains(NotallowedLeft))
-                                {
-                                    isInside = false;
-                                }
-                            });
-
-                            return isInside;
-
-                        }).ToArray();
-                       
-                    }
-                    //DOWN
-                    if (j < wfcData.gridSize.y -1 )
-                    {
-                        GridChunck cellDown = grid[ i + (j + 1) * wfcData.gridSize.x];
-                        List<string> upOptions= _chunckManager.GetNextGridEdgeOptions(ChunckManager.DOWN, cellDown.optionsAvailable).ToList();
-                        List<Option> finalOptions = new List<Option>();
-                        upOptions?.ForEach(leftOption =>
-                        {
-                            foreach (Option option in cell.optionsAvailable)
-                            {
-                                if (option.optionEdges[ChunckManager.TOP] == leftOption)
-                                {
-                                    finalOptions.Add(option);
-                                }
-                            }
-                        });
-                        
-                        
-                        if (cellDown.collapsed && cellDown.instancied)
-                        {
-                           
-                            if (wfcData.edgeToFollow.Contains(_chunckManager.GetNextGridEdgeOptions(ChunckManager.DOWN, cellDown.optionsAvailable)[0]))
-                            {
-                                isAlone = false;
-                                availablePath.AddRange( cellDown.path);
-
-                            }
-                        }
-
-                        cell.optionsAvailable = finalOptions.ToArray();
-                        
-                       
-                    }else if (wfcData.enableWalls && j < wfcData.gridSize.y)
-                    {
-                        List<string> leftOptions = _chunckManager.GetNextGridEdgeOptions(ChunckManager.TOP, cell.optionsAvailable).ToList();
-                        List<string> NotallowedLeftOption = leftOptions.Where(l => wfcData.edgeToFollow.Any(t => t == l)).ToList();
-
-                        cell.optionsAvailable = cell.optionsAvailable.Where(optionFull =>
-                        {
-                            bool isInside = true;
-                            NotallowedLeftOption?.ForEach(NotallowedLeft =>
-                            {
-                                if (optionFull.optionEdges[ChunckManager.TOP].Contains(NotallowedLeft))
-                                {
-                                    isInside = false;
-                                }
-                            });
-
-                            return isInside;
-
-                        }).ToArray();
-                       
-                    }
-
-
-                    if (!isAlone && wfcData.allChunckLinked)
-                    {
-
-                         availablePath.Remove(0);
-
-                        if (availablePath.Count > 0)
-                        {  
-                            cell.path = availablePath.ToArray();
-                            
-                        }
-                    }
-                } 
-                
+                }
             }
-        }
+            else
+            {
+                
+                
+                foreach (GridChunck gridChunck in grid)
+                {
+                    if (gridChunck.instancied == false && (gridChunck.isAlone == false || gridChunck.optionsAvailable.Length < 3))
+                    {
+                        CheckOptions(gridChunck);
+                    }
+                }
+               
+            }
 
-        pathIdentifier++;
-        GridChunck[] gridCopy = grid.Where(chunck => { return chunck.collapsed == false;}).OrderBy(gridchunk => { return gridchunk.optionsAvailable.Length ; }).ToArray();
-        gridCopy = gridCopy.Where(gridChunck => { return gridChunck.optionsAvailable.Length == gridCopy[0].optionsAvailable.Length;
-        }).ToArray();
+          
+            
+    
+             
 
-        GridChunck chunckChoosed = gridCopy[_random.Next(0, gridCopy.Length)];
-        chunckChoosed.collapsed = true;
+            pathIdentifier++;
+            GridChunck[] gridCopy = grid.Where(chunck => { return chunck.collapsed == false;}).OrderBy(gridchunk => { return gridchunk.optionsAvailable.Length ; }).ToArray();
+            gridCopy = gridCopy.Where(gridChunck => { return gridChunck.optionsAvailable.Length == gridCopy[0].optionsAvailable.Length;
+            }).ToArray();
+
+            GridChunck chunckChoosed = gridCopy[_random.Next(0, gridCopy.Length)];
+            chunckChoosed.collapsed = true;
 
        
                 if (chunckChoosed.collapsed && !chunckChoosed.instancied)
@@ -427,6 +479,8 @@ public class WaveFunctionCollapse : MonoBehaviour
                         ChunckData? chunckFound = _chunckManager.GetChunck(index);
                         if (chunckFound != null )
                         {
+                            chunckChoosed.isAlone = true;
+                            
                             Instantiate(chunckFound.assetsToInstanciate,
                                 new Vector3(chunckChoosed.Xpos * wfcData.chuncksSize.x, chunckChoosed.Ypos * wfcData.chuncksSize.y, 0), Quaternion.identity);
                             chunckChoosed.instancied = true;
@@ -435,10 +489,9 @@ public class WaveFunctionCollapse : MonoBehaviour
                     }
                 } 
     
-
         stiter++;
         stopwatch.Stop();
-        if (stiter >= maxIter)
+        if (stiter >= wfcData.gridSize.x * wfcData.gridSize.y )
         {
             
             //5*5 150000 t
@@ -446,7 +499,7 @@ public class WaveFunctionCollapse : MonoBehaviour
             // 18 000 t
             
             long t = stopwatch.ElapsedTicks / stiter;
-            long tiime = stopwatch.ElapsedMilliseconds / maxIter;
+            long tiime = stopwatch.ElapsedMilliseconds / ( wfcData.gridSize.x * wfcData.gridSize.y);
             Debug.Log(tiime);
             stopwatch.Reset();
             stiter = 0;

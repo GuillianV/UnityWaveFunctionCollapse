@@ -9,6 +9,8 @@ public class GridChunck
     public int[] path = new []{0};
     public bool isLastOutput = false;
 
+    public bool isAlone = true;
+    
     public Option[] optionsAvailable;
 
     public int gridValue;
