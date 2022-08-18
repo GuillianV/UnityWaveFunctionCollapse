@@ -8,14 +8,17 @@ using UnityEngine.UIElements;
 public class WFCWindow : EditorWindow
 {
     public DropdownField _bakingMode;
-    public ObjectField _wfcData;
+    
     public TextField _prefabName;
     public Button _bake;
     public ProgressBar _progressBar;
-
-    public WFCData wfcData;
     private bool isBaking = false;
     
+    
+    
+    public ObjectField _wfcData;
+    public WFCData wfcData;
+    private int wfcId;
     
     [MenuItem("Window/WFC")]
     public static void ShowWindow()
@@ -41,8 +44,7 @@ public class WFCWindow : EditorWindow
         _bakingMode.choices.Add("Tile Top-Down");
        
         _wfcData= root.Q<ObjectField>("wfc_data");
-
-        wfcData =(WFCData) _wfcData.value;
+       
         
         _prefabName = root.Q<TextField>("wfc_prefabGeneratedName");
         _bake = root.Q<Button>("wfc_bake");
@@ -56,6 +58,18 @@ public class WFCWindow : EditorWindow
     //Loop
     private void OnGUI()
     {
+
+        if (_wfcData.value != null)
+        {
+            wfcData = (WFCData) _wfcData.value;
+            
+            if (wfcId != wfcData.GetInstanceID())
+            {
+                
+            }
+            wfcId = wfcData.GetInstanceID();
+        }
+        
         if (_bakingMode != null)
         {
             Debug.Log(_bakingMode.value);
