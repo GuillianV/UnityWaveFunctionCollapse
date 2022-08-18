@@ -1,0 +1,24 @@
+{
+  "name": "com.guillian.wfc",
+  "version": "0.0.1",
+  "displayName": "Wave Function Collapse",
+  "description": "This is an example package",
+  "unity": "2020.3",
+  "unityRelease": "24f1",
+  "documentationUrl": "",
+  "changelogUrl": "",
+  "licensesUrl": "",
+  "dependencies": {
+    "com.unity.ui": "1.0.0-preview.18"
+  },
+  "keywords": [
+    "Tile Mapping",
+    "Wave Function Collapse",
+    "Procedural Generation"
+  ],
+  "author": {
+    "name": "Guillian",
+    "email": "guillianvibert90@gmail.com",
+    "url": "https://guillian.net"
+  }
+}
