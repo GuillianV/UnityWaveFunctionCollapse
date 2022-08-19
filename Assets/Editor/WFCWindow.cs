@@ -56,7 +56,11 @@ public class WFCWindow : EditorWindow
         if (!string.IsNullOrEmpty(wfcdataPath))
         {
             wfcData = (WFCData)AssetDatabase.LoadAssetAtPath(wfcdataPath, typeof(WFCData));
-            _wfcData.value = wfcData;
+            if (wfcData != null)
+            {
+                _wfcData.value = wfcData;
+            }
+          
         }
       
         
@@ -103,7 +107,7 @@ public class WFCWindow : EditorWindow
         {
             _progressBar.value = progressValue;
 
-            _progressBar.title = CalculateLoadingBar().ToString();
+            _progressBar.title = CalculateLoadingBar().ToString() + " %";
             
             if (_progressBar.value >= _progressBar.highValue)
             {
