@@ -96,14 +96,14 @@ public class WFCCore
                            ( _gridChunck.Xpos - 1 + _gridChunck.Ypos * wfcData.gridSize.x)
                             , _gridChunck.Xpos > 0
                             , wfcData.enableWalls && _gridChunck.Xpos == 0
-                            , ChunckManager.RIGHT
-                            , ChunckManager.LEFT)); 
+                            , ChunckManager.LEFT
+                            , ChunckManager.RIGHT)); 
                         
                    
                         gridChunckOptions.Add( new GridChunckOption(
-                           ( _gridChunck.Xpos + (_gridChunck.Ypos - 1) * wfcData.gridSize.x)
-                            , (_gridChunck.Ypos > 0)
-                            , (wfcData.enableWalls && _gridChunck.Ypos == 0)
+                            ( _gridChunck.Xpos + (_gridChunck.Ypos + 1) * wfcData.gridSize.x)
+                            , _gridChunck.Ypos < wfcData.gridSize.y -1
+                           , wfcData.enableWalls && _gridChunck.Ypos < wfcData.gridSize.y
                             , ChunckManager.TOP
                             , ChunckManager.DOWN));
 
@@ -112,14 +112,14 @@ public class WFCCore
                             (_gridChunck.Xpos + 1 + _gridChunck.Ypos  * wfcData.gridSize.x)
                             , _gridChunck.Xpos < wfcData.gridSize.x -1
                             , wfcData.enableWalls && _gridChunck.Xpos < wfcData.gridSize.x
-                            , ChunckManager.LEFT
-                            , ChunckManager.RIGHT));
+                            , ChunckManager.RIGHT
+                            , ChunckManager.LEFT));
 
 
                         gridChunckOptions.Add( new GridChunckOption(
-                           ( _gridChunck.Xpos + (_gridChunck.Ypos + 1) * wfcData.gridSize.x)
-                            , _gridChunck.Ypos < wfcData.gridSize.y -1
-                            , wfcData.enableWalls && _gridChunck.Ypos < wfcData.gridSize.y
+                            ( _gridChunck.Xpos + (_gridChunck.Ypos - 1) * wfcData.gridSize.x)
+                            , (_gridChunck.Ypos > 0)
+                           , (wfcData.enableWalls && _gridChunck.Ypos == 0)
                             , ChunckManager.DOWN
                             , ChunckManager.TOP));
 
@@ -135,13 +135,13 @@ public class WFCCore
 
                                 GridChunck nearCell = grid[chunckOption.gridChunckIndex];
                                
-                                List<string> nearOptions = _chunckManager.GetNextGridEdgeOptions(chunckOption.primaryEdgeOption, nearCell.optionsAvailable).ToList();
+                                List<string> nearOptions = _chunckManager.GetNextGridEdgeOptions(chunckOption.oppositeEdgeOption, nearCell.optionsAvailable).ToList();
                                 List<Option> finalOptions = new List<Option>();
                                 nearOptions?.ForEach(nearOption =>
                                 {
                                     foreach (Option option in cell.optionsAvailable)
                                     {
-                                        if (option.optionEdges[chunckOption.oppositeEdgeOption] == nearOption)
+                                        if (option.optionEdges[chunckOption.primaryEdgeOption] == new string(nearOption.Reverse().ToArray()) )
                                         {
                                             finalOptions.Add(option);
                                         }
@@ -155,12 +155,12 @@ public class WFCCore
                                     if (nearCell.instancied)
                                     {
                                         List<string> NextGridEdgeOptions =
-                                            _chunckManager.GetNextGridEdgeOptions(chunckOption.primaryEdgeOption,
+                                            _chunckManager.GetNextGridEdgeOptions(chunckOption.oppositeEdgeOption,
                                                 nearCell.optionsAvailable);
 
                                         if (NextGridEdgeOptions.Count > 0)
                                         {
-                                            if (wfcData.edgeToFollow.Contains(NextGridEdgeOptions[0]))
+                                            if (wfcData.edgeToFollow.Contains(  new string( NextGridEdgeOptions[0].Reverse().ToArray())))
                                             {
                                                 isAlone = false;
                                                 availablePath.AddRange( nearCell.path);
@@ -182,13 +182,18 @@ public class WFCCore
                             else if (chunckOption.oppositeExpressionValue)
                             {
                                 List<string> AllEdgesAvailableOptions = _chunckManager.GetNextGridEdgeOptions(chunckOption.oppositeEdgeOption, cell.optionsAvailable).ToList();
-                                List<string> NotAllowedOptions = AllEdgesAvailableOptions.Where(edge => wfcData.edgeToFollow.Any(WFCedge => WFCedge == edge)).ToList();
+                                List<string> NotAllowedOptions = new List<string>();
+                               
+                                    NotAllowedOptions = AllEdgesAvailableOptions.Where(edge => wfcData.edgeToFollow.Any(WFCedge => WFCedge == edge)).ToList();
+                                
+                                
                                 cell.optionsAvailable = cell.optionsAvailable.Where(optionFull =>
                                 {
                                     bool isInside = true;
                                     NotAllowedOptions?.ForEach(NotallowedLeft =>
                                     {
-                                        if (optionFull.optionEdges[chunckOption.oppositeEdgeOption].Contains(NotallowedLeft))
+                                        // ?
+                                        if (optionFull.optionEdges[chunckOption.primaryEdgeOption].Contains( new string( NotallowedLeft.Reverse().ToArray())))
                                         {
                                             isInside = false;
                                         }
@@ -296,10 +301,18 @@ public class WFCCore
 
             pathIdentifier++;
             GridChunck[] gridCopy = grid.Where(chunck => { return chunck.collapsed == false;}).OrderBy(gridchunk => { return gridchunk.optionsAvailable.Length ; }).ToArray();
-            gridCopy = gridCopy.Where(gridChunck => { return gridChunck.optionsAvailable.Length == gridCopy[0].optionsAvailable.Length;
+           
+            
+            //
+            gridCopy = gridCopy.Where(gridChunck => { return gridChunck.optionsAvailable.Length == gridCopy[0].optionsAvailable.Length ;
             }).ToArray();
 
+            if (gridCopy.Length == 0)
+            {
+                return;
+            }
             GridChunck chunckChoosed = gridCopy[_random.Next(0, gridCopy.Length)];
+
             chunckChoosed.collapsed = true;
 
        
@@ -309,9 +322,7 @@ public class WFCCore
                     if (chunckChoosed.optionsAvailable.Length == 0)
                     {
                         
-                        
-                        
-                        
+             
                         Debug.LogError("Missing chunck to match");
                         chunckChoosed.instancied = true;
                     }
@@ -359,7 +370,7 @@ public class WFCCore
                         }
 
 
-                        if (chunckChoosed.isLastOutput && wfcData.allChunckLinked)
+                        if (chunckChoosed.isLastOutput && wfcData.allChunckLinked || iter == 1 )
                         {
                             int oldCount = 0;
                             int count = 0;

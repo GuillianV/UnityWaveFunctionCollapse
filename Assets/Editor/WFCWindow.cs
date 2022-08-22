@@ -146,7 +146,7 @@ public class WFCWindow : EditorWindow
 
     private void Bake()
     {
-        if (wfcData != null && !isBaking && _progressBar!= null)
+        if (wfcData != null && !isBaking  && _progressBar!= null)
         {
             isBaking = true;
             int highValue = (wfcData.gridSize.x * wfcData.gridSize.y) - 1;
@@ -174,7 +174,12 @@ public class WFCWindow : EditorWindow
                         
                             _progressBar.value = _progressBar.value +=1 ;
                             KeyValuePair<GridChunck, ChunckData> chunckChoosed = core._gridChuncksQueue.Dequeue();
-                            Instantiate(chunckChoosed.Value.assetsToInstanciate,new Vector3(chunckChoosed.Key.Xpos * wfcData.chuncksSize.x, chunckChoosed.Key.Ypos * wfcData.chuncksSize.y, 0), Quaternion.identity, map.transform);
+                            if (chunckChoosed.Value != null)
+                            {
+                                Instantiate(chunckChoosed.Value.assetsToInstanciate,new Vector3(chunckChoosed.Key.Xpos * wfcData.chuncksSize.x, chunckChoosed.Key.Ypos * wfcData.chuncksSize.y, 0), Quaternion.identity, map.transform);
+
+                            }
+                            
                             instanciatingValue += 1;
                         }
                     
