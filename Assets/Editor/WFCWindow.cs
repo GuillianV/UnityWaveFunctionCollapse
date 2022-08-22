@@ -116,6 +116,13 @@ public class WFCWindow : EditorWindow
                 _progressBar.value = _progressBar.lowValue;
                 
             }
+
+            if (_progressBar.value == 0)
+            {
+                progressValue = 0;
+                _progressBar.value = _progressBar.lowValue;
+                isBaking = false;
+            }
             
             
         }
@@ -156,8 +163,10 @@ public class WFCWindow : EditorWindow
 
            string path = AssetDatabase.GetAssetPath(wfcData);
            PlayerPrefs.SetString("WFCDATA",path);
-   
-           
+
+
+           core = new WFCCore();
+           core.OnEndDraw += DrawHandler;
            
             core.UpdateData(wfcData, _bakingMode.value);
 

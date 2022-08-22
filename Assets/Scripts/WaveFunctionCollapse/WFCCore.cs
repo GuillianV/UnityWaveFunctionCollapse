@@ -125,7 +125,7 @@ public class WFCCore
 
 
 
-                        List<string> optionMissingValue = new List<string>();
+                        string[] optionMissingValue = new string[4];
                         bool isNextToInstancied = false; 
                         foreach (GridChunckOption chunckOption in gridChunckOptions)
                         {
@@ -175,6 +175,18 @@ public class WFCCore
                                
                                    
                                 }
+
+
+                                if (finalOptions.ToArray().Length == 0)
+                                {
+                                    if (nearOptions.Count > 0)
+                                    {
+                                        optionMissingValue[chunckOption.primaryEdgeOption] = nearOptions[0];
+
+
+                                    }
+                                    
+                                }
                                 
                                 cell.optionsAvailable = finalOptions.ToArray();
 
@@ -217,6 +229,7 @@ public class WFCCore
                                     GridChunck nearCell = grid[chunckOption.gridChunckIndex];
                                     nearCell.isAlone = false;
                                 }
+
                             
                             }
                         }
@@ -270,6 +283,14 @@ public class WFCCore
             }
             else
             {
+                grid.ToList().ForEach(gridChunck =>
+                {
+                    if (gridChunck.optionsAvailable.Length == 0)
+                    {
+                        gridChunck.optionsAvailable = _chunckManager.options.ToArray();
+                    }
+                    
+                }) ;
                 if (grid.Count(gridChunck => gridChunck.instancied == false && gridChunck.isAlone == false) == 0)
                 {
                     foreach (GridChunck gridChunck in grid)
@@ -319,16 +340,13 @@ public class WFCCore
                 if (chunckChoosed.collapsed && !chunckChoosed.instancied)
                 {
                     int pathNumber = 0;
-                    if (chunckChoosed.optionsAvailable.Length == 0)
+
+
+                    if (chunckChoosed.optionsAvailable.Length > 0)
                     {
                         
-             
-                        Debug.LogError("Missing chunck to match");
-                        chunckChoosed.instancied = true;
-                    }
-                    else
-                    {
-                        
+                    
+                    
                         foreach (string optionEdge in chunckChoosed.optionsAvailable[0].optionEdges)
                         {
                             if (wfcData.edgeToFollow.Contains(optionEdge))
@@ -337,6 +355,8 @@ public class WFCCore
                             }
                                     
                         }
+                        
+                    }
                             
                         //Si la cell n'est pas connecté a une autre via un chemin disponible (edgeToFollow). Elle n'enregistre pas de path a son actif
                         if (chunckChoosed.path.Length == 1 && chunckChoosed.path[0] == 0)
@@ -370,7 +390,7 @@ public class WFCCore
                         }
 
 
-                        if (chunckChoosed.isLastOutput && wfcData.allChunckLinked || iter == 1 )
+                        if ((chunckChoosed.isLastOutput && wfcData.allChunckLinked || iter == 1) && chunckChoosed.optionsAvailable.Length>0 )
                         {
                             int oldCount = 0;
                             int count = 0;
@@ -411,6 +431,8 @@ public class WFCCore
                         
                         string index = chunckChoosed.optionsAvailable[0].optionValue;
 
+                        
+                        
                         ChunckData? chunckFound = _chunckManager.GetChunck(index);
                         if (chunckFound != null )
                         {
@@ -420,7 +442,23 @@ public class WFCCore
                             chunckChoosed.instancied = true;
                             
                         }
-                    }
+                        else
+                        {
+                            if (chunckChoosed.optionsAvailable.Length == 0 || chunckChoosed.optionsAvailable[0].optionValue == null  )
+                            {
+
+                                _gridChuncksQueue.Enqueue(new KeyValuePair<GridChunck, ChunckData>(chunckChoosed,null) );
+                            
+                                // Instantiate(chunckFound.assetsToInstanciate,new Vector3(chunckChoosed.Xpos * wfcData.chuncksSize.x, chunckChoosed.Ypos * wfcData.chuncksSize.y, 0), Quaternion.identity);
+                                chunckChoosed.instancied = true;
+
+                                Debug.LogWarning("Missing chunck to match");
+                                chunckChoosed.instancied = true;
+                                chunckChoosed.optionsAvailable = _chunckManager.options.ToArray();
+                        
+                            }
+                        }
+                    
                 } 
     
    

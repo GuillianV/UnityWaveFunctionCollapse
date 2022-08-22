@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d77039fd1e60614ea02b7bd2ffc3694, type: 3}
   m_Name: MysticalMain
   m_EditorClassIdentifier: 
-  gridSize: {x: 2, y: 2}
+  gridSize: {x: 50, y: 50}
   chuncksSize: {x: 8, y: 8}
   allChunckLinked: 1
   enableWalls: 0
@@ -23,4 +23,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 62722cd728798fa4aaff35bc0e0a0f97, type: 2}
   - {fileID: 11400000, guid: 3c65c9e642a4ea240a7a5a7ad99ee96d, type: 2}
   - {fileID: 11400000, guid: c09b44143c2b01f4d8d9c5e412032b40, type: 2}
-  seed: 3
+  seed: 51
