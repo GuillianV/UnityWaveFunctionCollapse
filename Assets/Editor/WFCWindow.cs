@@ -207,6 +207,7 @@ public class WFCWindow : EditorWindow
         
     }
 
+
     public void DrawHandler(object sender, EventArgs eventArgs)
     {
         progressValue += 1;

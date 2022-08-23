@@ -181,8 +181,7 @@ public class WFCCore
                                 {
                                     if (nearOptions.Count > 0)
                                     {
-                                        optionMissingValue[chunckOption.primaryEdgeOption] = nearOptions[0];
-
+                                        optionMissingValue[chunckOption.primaryEdgeOption] =  new string(nearOptions[0].Reverse().ToArray());
 
                                     }
                                     
@@ -222,6 +221,7 @@ public class WFCCore
                         {
                             foreach (GridChunckOption chunckOption in gridChunckOptions)
                             {
+
                             
                                 if (chunckOption.expressionValue)
                                 {
@@ -233,6 +233,34 @@ public class WFCCore
                             
                             }
                         }
+                        
+                        if (optionMissingValue.Count(missingOption => missingOption != null) > 0)
+                        {
+                            foreach (GridChunckOption chunckOption in gridChunckOptions)
+                            {
+
+                                string? missingOpt = optionMissingValue[chunckOption.primaryEdgeOption];
+                                if (missingOpt == null)
+                                {
+                              
+                                   List<string> nextCellCollideOptionEdge = _chunckManager.GetNextGridEdgeOptions(chunckOption.oppositeEdgeOption, grid[chunckOption.gridChunckIndex].optionsAvailable).ToList();
+                                   if (nextCellCollideOptionEdge.Count > 0)
+                                   {
+                                       optionMissingValue[chunckOption.primaryEdgeOption] =
+                                           new string(nextCellCollideOptionEdge[0].Reverse().ToArray());
+                                           
+
+                                   }
+                                }
+                                    
+                            }
+
+                          
+                            
+                            Debug.LogError(string.Format("Missing chunck type of {0}-{1}-{2}-{3} at position X : {4}, Y : {5}",optionMissingValue[ChunckManager.LEFT],optionMissingValue[ChunckManager.TOP],optionMissingValue[ChunckManager.RIGHT],optionMissingValue[ChunckManager.DOWN], cell.Xpos * wfcData.chuncksSize.x, cell.Ypos * wfcData.chuncksSize.y));
+                          
+                        }
+
 
                        
                         if (!isAlone && wfcData.allChunckLinked)
