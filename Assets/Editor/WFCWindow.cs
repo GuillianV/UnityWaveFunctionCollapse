@@ -28,7 +28,7 @@ public class WFCWindow : EditorWindow
 
     private GameObject map;
     
-    [MenuItem("Window/WFC")]
+    [MenuItem("Window/WFC %w")]
     public static void ShowWindow()
     {
         var window = GetWindow<WFCWindow>("WFC Window");

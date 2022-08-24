@@ -242,15 +242,37 @@ public class WFCCore
                                 string? missingOpt = optionMissingValue[chunckOption.primaryEdgeOption];
                                 if (missingOpt == null)
                                 {
-                              
-                                   List<string> nextCellCollideOptionEdge = _chunckManager.GetNextGridEdgeOptions(chunckOption.oppositeEdgeOption, grid[chunckOption.gridChunckIndex].optionsAvailable).ToList();
-                                   if (nextCellCollideOptionEdge.Count > 0)
-                                   {
-                                       optionMissingValue[chunckOption.primaryEdgeOption] =
-                                           new string(nextCellCollideOptionEdge[0].Reverse().ToArray());
+
+                                    if (chunckOption.expressionValue)
+                                    {
+                                        List<string> nextCellCollideOptionEdge = _chunckManager.GetNextGridEdgeOptions(chunckOption.oppositeEdgeOption, grid[chunckOption.gridChunckIndex].optionsAvailable).ToList();
+                                        if (nextCellCollideOptionEdge.Count > 0)
+                                        {
+                                            optionMissingValue[chunckOption.primaryEdgeOption] =
+                                                new string(nextCellCollideOptionEdge[0].Reverse().ToArray());
                                            
 
-                                   }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        List<string> AllEdgesAvailableOptions = _chunckManager.GetNextGridEdgeOptions(chunckOption.oppositeEdgeOption, cell.optionsAvailable).ToList();
+                                        List<string> NotAllowedOptions = new List<string>();
+                               
+                                        NotAllowedOptions = AllEdgesAvailableOptions.Where(edge => wfcData.edgeToFollow.Any(WFCedge => WFCedge == edge)).ToList();
+
+                                        if (NotAllowedOptions.Count > 0)
+                                        {
+                                            optionMissingValue[chunckOption.primaryEdgeOption] =
+                                                new string(NotAllowedOptions[0].Reverse().ToArray());
+ 
+                                        }
+
+                                        
+                                      
+                                    }
+                                    
+                                  
                                 }
                                     
                             }
