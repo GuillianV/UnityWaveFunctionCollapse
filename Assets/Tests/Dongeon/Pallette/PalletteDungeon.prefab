@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 191612366875680508}
   - component: {fileID: 8633403505866875417}
   m_Layer: 31
-  m_Name: PalletteTest
+  m_Name: PalletteDungeon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
